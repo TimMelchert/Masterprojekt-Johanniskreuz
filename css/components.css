@@ -110,29 +110,6 @@
 .kachel:hover { border-color: var(--schrift-leise); border-left-color: var(--feld); }
 .kachel p { margin: 0; color: var(--schrift-leise); }
 
-.felder {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-    gap: 0.5rem;
-}
-
-.felder li { display: flex; align-items: center; gap: 0.75rem; }
-
-.feld-marke {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 6px;
-    background: var(--feld);
-    color: var(--schrift-auf-feld);
-    font-weight: 700;
-}
-
 /* ---------- 3 Info ---------- */
 
 .wahl { border: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }

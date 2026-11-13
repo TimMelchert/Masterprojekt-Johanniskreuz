@@ -1,6 +1,6 @@
 // Pfalzturm – Service Worker
 // VERSION muss exakt gleich sein wie in js/config.js (bei jeder Änderung beide hochzählen).
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 const CACHE_NAME = 'pfalzturm-' + VERSION;
 
 // App-Hülle: alle Dateien, die die App zum Starten braucht. Neue Dateien hier eintragen.
