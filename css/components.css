@@ -1,4 +1,4 @@
-/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte, 7 ToDo-Seite. */
+/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte, 7 ToDo-Seite, 8 Zeitplan (Gantt). */
 
 /* ---------- 1 Grundbausteine ---------- */
 
@@ -402,3 +402,118 @@ textarea.eingabe { resize: vertical; min-height: 5rem; }
 
 .klapper { margin: 0; font-size: 1rem; }
 .gruppe-titel { font-size: 1.15rem; font-weight: 700; }
+
+/* ---------- 8 Zeitplan (Gantt) ---------- */
+
+.gantt-rahmen {
+    overflow-x: auto;
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    background: var(--kachel);
+    -webkit-overflow-scrolling: touch;
+}
+
+.gantt-raster { --name-breite: 8.5rem; position: relative; width: max-content; min-width: 100%; }
+
+.gantt-zeile { display: flex; align-items: stretch; border-top: 1px solid var(--linie); }
+.gantt-kopf { border-top: none; }
+
+.gantt-name {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    width: var(--name-breite);
+    min-height: 44px;
+    padding: 0.3rem 0.5rem;
+    border: none;
+    border-right: 1px solid var(--linie);
+    background: var(--kachel);
+    color: var(--schrift);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: left;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+
+.gantt-zeile[data-farbe] .gantt-name { box-shadow: inset 5px 0 0 var(--schritt); padding-left: 0.7rem; }
+.gantt-unter .gantt-name { font-weight: 400; padding-left: 1.4rem; }
+.gantt-toggler { cursor: pointer; }
+
+.gantt-spur { position: relative; flex: none; min-height: 44px; }
+.gantt-kopf-spur { height: 2.6rem; }
+
+.gantt-monat { position: absolute; top: 0.2rem; padding-left: 0.25rem; border-left: 1px solid var(--schrift-leise); font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+.gantt-woche { position: absolute; bottom: 0.15rem; font-size: 0.7rem; color: var(--schrift-leise); }
+
+.gantt-balken {
+    position: absolute;
+    top: 50%;
+    height: 1.4rem;
+    transform: translateY(-50%);
+    padding: 0;
+    border: 1px solid var(--schrift-leise);
+    border-radius: 5px;
+    background: var(--schritt, var(--feld-g));
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Die Fläche des Knopfs ist am Handy höher als der Balken (mindestens 44 px zum Tippen) */
+.gantt-balken::after { content: ""; position: absolute; left: 0; right: 0; top: -0.7rem; bottom: -0.7rem; }
+
+.gantt-voll { position: absolute; left: 0; top: 0; bottom: 0; background: var(--schrift-auf-feld); opacity: 0.35; }
+.gantt-fertig { opacity: 0.55; }
+.gantt-unter .gantt-balken { height: 0.9rem; }
+.gantt-ohne { position: sticky; left: calc(var(--name-breite) + 0.5rem); display: inline-block; padding: 0.8rem 0.5rem; }
+
+.gantt-meilenstein {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--schrift);
+    font: inherit;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    transform: translateX(-0.5rem);
+    cursor: pointer;
+}
+
+.gantt-meilenstein .raute { margin: 0; width: 0.9rem; height: 0.9rem; flex: none; }
+
+.gantt-heute {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    border-left: 2px dashed var(--fehler);
+    pointer-events: none;
+}
+
+.gantt-heute span {
+    position: absolute;
+    top: 1.35rem;
+    left: 3px;
+    padding: 0 0.2rem;
+    border-radius: 3px;
+    background: var(--fehler);
+    color: var(--knopf-schrift);
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .gantt-raster { --name-breite: 12rem; }
+}

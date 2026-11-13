@@ -124,5 +124,5 @@
     .reiter-link[aria-current="page"] { background: var(--kachel); }
     .reiter-name-lang { display: inline; }
     .reiter-name-kurz { display: none; }
-    .inhalt { padding-bottom: 2rem; width: 100%; }
+    .inhalt { padding-bottom: 2rem; width: 100%; min-width: 0; }
 }
