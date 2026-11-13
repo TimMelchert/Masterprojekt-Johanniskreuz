@@ -4,10 +4,10 @@
 Lies sie zuerst, bei jeder Aufgabe. `CLAUDE.md` im Hauptordner zeigt nur hierher.
 Für eine neue Etappe kommt ein eigener Plan dazu (`docs/PLAN-ETAPPE-<n>.md`); am Ende der Etappe wird er hier eingearbeitet und gelöscht.
 
-- Version der App: **0.1.2** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
+- Version der App: **0.2.1** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
 - Repo: https://github.com/TimMelchert/Masterprojekt-Johanniskreuz (öffentlich)
 - Seite (App): https://timmelchert.github.io/Masterprojekt-Johanniskreuz/ (sobald GitHub Pages eingeschaltet ist)
-- Laufende Etappe: **0 „Start“**. Schritt 0.1.2 „Umbenennen“ liegt als Pull Request vor. Nächste Etappe: 1 „Arbeitsschritte, ToDos und Gantt“ (Plan in `docs/PLAN-ETAPPE-1.md`, kommt mit Schritt 1.1).
+- Laufende Etappe: **1 „Arbeitsschritte, ToDos und Gantt“** (Plan: `docs/PLAN-ETAPPE-1.md`). Schritte 1.1 „Daten“ und 1.2 „Zeitstrahl“ liegen als Pull Requests vor. Nächster Schritt: 1.3 ToDos-Seite.
 
 Inhalt: 1 Arbeitsregeln · 2 Aufbau · 3 Aktueller Stand und Offen · 4 Festlegungen je Bereich · 5 Technik-Merkzettel ·
 6 Dateiübersicht · 7 Pläne · 8 Geschichte
@@ -200,7 +200,7 @@ unter „Info“ die Version prüfen.
 - Statische PWA auf GitHub Pages (öffentliches Repo, kostenlos; Quelle: Zweig `main`, Ordner `/`).
   Repo-Bereiche: `index.html`, `manifest.webmanifest`, `sw.js`, `.nojekyll`, `docs/`, `icons/`, `css/` (base, layout, components),
   `js/` (app, config, api, store, ui/, views/), `vendor/` (lokale Bibliotheken), `karten/` (öffentliche Kartendaten), `apps-script/`.
-- Hash-Routing: `#/` (gleich `#/start`), `#/karten`, `#/karten/<karte>`, `#/zeitplan`, `#/arbeitsschritte`, `#/akteure`, `#/info`. Unbekannte Adressen zeigen „Seite nicht gefunden“.
+- Hash-Routing: `#/` (gleich `#/start`), `#/karten`, `#/karten/<karte>`, `#/zeitplan`, `#/arbeitsschritte`, `#/todos` (ab 1.1), `#/akteure`, `#/info`. Unbekannte Adressen zeigen „Seite nicht gefunden“.
 - Ansicht = `js/views/<name>.js` mit `render(container, ctx)`.
 - Handy: Leiste unten. PC (ab 768 px): Seitenleiste links. Hell, Dunkel, Wie Gerät.
 - **Anmeldung:** Ein gemeinsames Gruppenpasswort für alle Unterseiten. Nach dem ersten Anmelden merkt sich das Gerät das Passwort
@@ -226,11 +226,28 @@ unter „Info“ die Version prüfen.
 
 ### 2.3 Google Sheet (Tabs)
 
-Kopfzeile in Zeile 1 (klein, ohne Umlaute). Alle Daten-Blätter haben zusätzlich `id, erstellt_am, geaendert_am, geloescht`.
-Die genauen Spalten legt der Plan der jeweiligen Etappe fest. Geplant:
+Kopfzeile in Zeile 1 (klein, ohne Umlaute). Alle Daten-Blätter haben vorne `id, erstellt_am, geaendert_am, geloescht`.
+Die Spalten stehen im Skript in `FELDER_` (Etappe 1) und `SPAETER_`. `einrichten` legt fehlende Blätter und Spalten an und formatiert Text- und Datumsspalten als reinen Text.
 
-| Blatt | Inhalt |
+| Blatt | Spalten (nach den Standardspalten) |
 | --- | --- |
+| `arbeitsschritte` | `titel, farbe, start, ende, status, reihenfolge, beschreibung` (ab 1.1) |
+| `unterpunkte` | `arbeitsschritt_id, titel, start, ende, status, reihenfolge, beschreibung` (ab 1.1) |
+| `todos` | `unterpunkt_id, titel, wer, faellig, erledigt, erledigt_am, notiz` (ab 1.1; `unterpunkt_id` leer = allgemeines ToDo) |
+| `meilensteine` | `titel, datum, beschreibung` (ab 1.1) |
+| `termine` | `titel, organisation, datum, uhrzeit, ort, personen` (später; Namen nur in `personen`) |
+| `akteure` | `name, typ, feld, einfluss, interesse, notiz` (Etappe 3) |
+| `beziehungen` | `von, nach, art, staerke, quelle` (Etappe 3) |
+| `einstellungen` | nur `schluessel, wert` (ohne Standardspalten) |
+
+- `status`: `offen`, `in_arbeit`, `erledigt`. `farbe`: `gruen, blau, orange, gelb, rosa, lila, tuerkis, grau` (Werte in `css/base.css`, `--schritt-<farbe>`).
+- Datumsfelder als Text `JJJJ-MM-TT`. `erledigt_am` setzt nur das Skript.
+- Das Blatt `aufgaben` aus 0.1 ist überholt; `einrichten` legt es nicht mehr an, die Person darf es löschen.
+- **Aktionen** (alle mit Passwort): `ping`, `liste` (alle vier Blätter der Etappe 1, ohne gelöschte), `speichern` (`blatt`, `daten`; ohne `id` = neu, sonst mit `geaendert_am` als Schutz vor Überschreiben, Fehler `geaendert`),
+  `abhaken` (`id`, `wert`), `loeschen` (`blatt`, `id`; weich, Arbeitsschritt nimmt Unterpunkte und ToDos mit, Unterpunkt seine ToDos; Antwort `geloescht` je Blatt).
+  Schreiben nur mit `LockService`. Jede Eingabe geht durch `pruefeEingabe_` (Art, Länge, erlaubte Werte, Bezug existiert, Ende nicht vor Start).
+
+--- | --- |
 | `aufgaben` | Phasen, Arbeitsschritte und Unterschritte in einer Liste (`titel, feld, wer, start, ende, status, uebergeordnet, abhaengig_von, meilenstein`). Gantt und Zeitstrahl lesen beide daraus. |
 | `termine` | Gespräche und Termine (`titel, organisation, datum, uhrzeit, ort, personen`). Mit Passwort sichtbar; Namen nur in `personen`. |
 | `akteure` | `name, typ, feld, einfluss, interesse, notiz` |
@@ -247,12 +264,16 @@ Die genauen Spalten legt der Plan der jeweiligen Etappe fest. Geplant:
   Zeitplan, Arbeitsschritte, Akteure (bis zu ihrer Etappe Platzhalter), Info mit Aussehen und Abmelden. Skript `apps-script/Code.gs`
   mit `einrichten` (legt die Blätter aus 2.3 an) und Aktion `ping`.
 - 0.1.1 (13.11.2026): Skript ist bereitgestellt, `API_URL` eingetragen. Themenfelder von der Startseite entfernt (Wunsch der Person).
-  Icon nach der Visualisierung des T-Lab RPTU neu gezeichnet. Link zum T-Lab unter „Info“.
+  Icon nach der Visualisierung des T-Lab RPTU neu gezeichnet. Link zum T-Lab unter „Info“ (in 0.1.2 wieder entfernt).
+- 0.1.2: Name „Masterprojekt Johanniskreuz“.
+- 0.2.0 (Schritt 1.1): Skript kennt Arbeitsschritte, Unterpunkte, ToDos, Meilensteine (lesen, speichern, abhaken, löschen). Leiste hat „ToDos“.
+  Die Seiten Arbeitsschritte, ToDos und Zeitplan sind noch Platzhalter (1.2 bis 1.4).
+- 0.2.1 (Schritt 1.2): Seite Arbeitsschritte: horizontaler Zeitstrahl mit Meilensteinen, Pfeile „Plan“ und „Stand“, Satz „im Plan / hinter / vor dem Plan“,
+  Details des gewählten Schritts mit aufklappbaren Unterpunkten und ToDos zum Abhaken, Formulare für alles, allgemeine ToDos darunter.
 
 ### 3.2 Offen
 
-- Repo-Name und Adresse eintragen.
-- Zeitplan: Die Gruppe hat einen; die Person beschreibt ihn bei Etappe 1.
+- Die Person schickt die Liste der echten Arbeitsschritte, Unterpunkte und ToDos (Schritt 1.5).
 
 ---
 
@@ -285,6 +306,15 @@ Die App schreibt nicht in Seafile (Entscheidung 13.11.2026). Seafile hätte eine
 dürfte die ganze Bibliothek lesen und ändern. Das Risiko ist für eine Übersichtsseite zu groß. Die App verlinkt nur auf Seafile-Ordner;
 wer den Link öffnet, meldet sich dort wie gewohnt an.
 
+### Arbeitsschritte (ab 1.2)
+
+- Reihenfolge der Arbeitsschritte: nach Start, dann `reihenfolge`, dann Titel. Unterpunkte: nach `reihenfolge` (neue bekommen die nächste Zahl), dann Start.
+- Pfeil **„Plan“**: zuletzt begonnener Arbeitsschritt (Start ≤ heute). Pfeil **„Stand“**: erster Arbeitsschritt, der nicht erledigt ist.
+  Erledigt = Status „erledigt“ oder alle ToDos seiner Unterpunkte abgehakt (mindestens eines). Entscheidung von Claude, 13.11.2026, der Person mitgeteilt.
+- Meilensteine stehen im Zeitstrahl hinter dem letzten Arbeitsschritt, der vor oder an ihrem Datum beginnt.
+- Neue Arbeitsschritte bekommen die erste noch nicht benutzte Farbe.
+- Erledigte ToDos bleiben stehen (ausgegraut, durchgestrichen), offene zuerst, dann nach Fälligkeit.
+
 ### Karten (Ablauf für QGIS)
 
 1. In QGIS arbeiten wie gewohnt (vermutlich ETRS89 / UTM 32N, EPSG:25832).
@@ -311,21 +341,23 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 
 - Hauptordner: `CLAUDE.md` (zeigt nur hierher), `README.md`, `index.html`, `manifest.webmanifest`, `sw.js`, `.nojekyll`.
   `LIZENZEN.md` kommt mit der ersten Bibliothek (Etappe 2).
-- `css/`: `base.css` (Farben, hell und dunkel), `layout.css` (Kopf, Leiste unten am Handy, links am PC), `components.css` (Abschnitte 1 Grundbausteine, 2 Start, 3 Info).
-- `js/`: `app.js` (Routing, Leiste, Update-Hinweis, Schutz vor fremden Rahmen), `config.js` (VERSION, `API_URL`, `features`, `BEREICHE`, `FELDER`),
+- `css/`: `base.css` (Farben, hell und dunkel), `layout.css` (Kopf, Leiste unten am Handy, links am PC), `components.css` (Abschnitte 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte).
+- `js/`: `daten.js` (ab 1.1: `ladeDaten`, `speichere`, `hake`, `loesche`, `vergessen`, Listen `STATUS`, `FARBEN`; Daten nur im Arbeitsspeicher), `app.js` (Routing, Leiste, Update-Hinweis, Schutz vor fremden Rahmen), `config.js` (VERSION, `API_URL`, `features`, `BEREICHE`, `FELDER`),
   `api.js` (`api(action, daten)`, `pruefePasswort`, `ApiFehler`), `store.js` (`lesen`, `schreiben`, `abmelden`, `istAngemeldet`),
-  `ui/dom.js` (`el`, `leeren`, `sichereUrl`), `ui/aussehen.js`.
-- `js/views/`: `start.js` (Anmeldung bzw. Kacheln), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
+  `ui/dom.js` (`el`, `leeren`, `sichereUrl`), `ui/aussehen.js`, `ui/fenster.js` (ab 1.1: `zeigeFenster` mit `<dialog>`, `frage`), `ui/formular.js` (ab 1.1: `formularFenster` mit Feldarten text, lang, datum, wahl, farbe, haken).
+- `js/rechnen.js` (ab 1.2): Sortieren, Fortschritt, `planIndex`, `standIndex`, `vergleichText`, `zeitstrahlReihe`, `personen`, Datumstexte.
+- `js/ui/meldung.js` (ab 1.2): `zeigeMeldung` (kurze Meldung unten).
+- `js/views/`: `arbeitsschritte.js` (ab 1.2, Zeitstrahl), `formulare.js` (ab 1.2, Formulare für alle vier Blätter), `todo-zeile.js` (ab 1.2, ToDo mit Haken), `start.js` (Anmeldung bzw. Kacheln), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
 - `icons/`: `icon.svg`, `icon-180.png` (Apple), `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`.
 - `apps-script/Code.gs`: das Google-Skript (Kopie; die echte Fassung liegt im Apps-Script-Editor des Sheets).
-- `docs/STAND.md`: diese Datei.
+- `docs/STAND.md`: diese Datei. `docs/PLAN-ETAPPE-1.md`: Plan der laufenden Etappe.
 
 ---
 
 ## 7. Pläne
 
 - **Etappe 0 „Start“ (0.1.x):** Grundgerüst als PWA, Navigation, Themenfarben, Anmeldung mit Gruppenpasswort, Apps Script mit `ping`, `einrichten` (legt die Blätter an).
-- **Etappe 1 „Zeitplan“ (0.2.x):** Blatt `aufgaben`, Gantt und Zeitstrahl mit aufklappbaren Unterpunkten, Filter nach Themenfeld und Person.
+- **Etappe 1 „Arbeitsschritte, ToDos und Gantt“ (0.2.x):** siehe `docs/PLAN-ETAPPE-1.md` (läuft).
 - **Etappe 2 „Karten“ (0.3.x):** Leaflet, erste Karte „Standort Johanniskreuz“ mit Grundkarte, Schutzgebieten (WMS) und QGIS-Ebenen der Gruppe.
 - **Etappe 3 „Akteursnetz“ (0.4.x):** Netzwerk und Einfluss-Interesse-Matrix.
 - **Danach:** Startseite mit Übersicht, Präsentationsansicht für die Abgabe, weitere Ideen nach Bedarf.
@@ -338,3 +370,5 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - 0.1.0 (13.11.2026): Schritt 0.1 Grundgerüst.
 - 0.1.1 (13.11.2026): Skript-Adresse, Startseite ohne Themenfelder, neues Icon.
 - 0.1.2 (13.11.2026): Umbenannt in „Masterprojekt Johanniskreuz“, T-Lab-Link raus.
+- 0.2.0 (13.11.2026): Schritt 1.1 Daten: Blätter und Aktionen im Skript, `js/daten.js`, Fenster und Formulare, Leiste mit „ToDos“.
+- 0.2.1 (13.11.2026): Schritt 1.2 Zeitstrahl der Arbeitsschritte.

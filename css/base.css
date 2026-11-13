@@ -13,6 +13,16 @@
     --feld-e: #F8BBD0;   /* Turm & Alternativen */
     --feld-f: #D1C4E9;   /* Theorie / kritische Landforschung */
     --feld-g: #E0E0E0;   /* Organisation */
+
+    /* Farben der Arbeitsschritte (Auswahl im Formular, js/daten.js FARBEN). Gleich in hell und dunkel, Schrift darauf --schrift-auf-feld. */
+    --schritt-gruen: #A5D6A7;
+    --schritt-blau: #90CAF9;
+    --schritt-orange: #FFCC80;
+    --schritt-gelb: #FFF176;
+    --schritt-rosa: #F48FB1;
+    --schritt-lila: #B39DDB;
+    --schritt-tuerkis: #80CBC4;
+    --schritt-grau: #BDBDBD;
     --schrift-auf-feld: #1B1F23;
 
     /* Kopfzeile: Dunkelblau aus den Tabellenköpfen des Cockpits, hell und dunkel gleich */
@@ -30,6 +40,7 @@
     --fokus: #1F3A4D;
     --fehler: #B3261E;
     --hinweis-grund: #EEF2F5;
+    --schatten: rgba(0, 0, 0, 0.35);
 }
 
 :root[data-aussehen="dunkel"] {

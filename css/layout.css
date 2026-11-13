@@ -81,6 +81,7 @@
 
 .reiter-link[data-feld] .reiter-punkt { border-color: transparent; }
 .reiter-link[data-feld="a"] .reiter-punkt { background: var(--feld-a); }
+.reiter-link[data-feld="b"] .reiter-punkt { background: var(--feld-b); }
 .reiter-link[data-feld="c"] .reiter-punkt { background: var(--feld-c); }
 .reiter-link[data-feld="d"] .reiter-punkt { background: var(--feld-d); }
 .reiter-link[data-feld="g"] .reiter-punkt { background: var(--feld-g); }
