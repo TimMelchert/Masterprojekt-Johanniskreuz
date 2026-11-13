@@ -1,15 +1,16 @@
 // Zeitplan: Gantt-Diagramm (Etappe 1.4, docs/PLAN-ETAPPE-1.md). Ohne Bibliothek, Aufbau angelehnt an AktionsDeck.
 // Zeilen: Meilensteine (Rauten), dann je Arbeitsschritt ein Balken in seiner Farbe mit Fortschritt (Anteil erledigter ToDos).
 // Unterpunkte mit Datum klappen unter ihrem Arbeitsschritt auf. Heute-Linie gestrichelt. Antippen öffnet das Formular.
+// Zeile „Termine“ (ab 0.2.5): Punkte für einzelne und wöchentliche Termine, schraffierte Balken für freie Zeiten.
 // Positionen setzt das Skript über element.style (erlaubt mit der Content-Security-Policy, kein style="…" im HTML).
 
 import { el, leeren } from '../ui/dom.js';
 import { ladeDaten } from '../daten.js';
 import {
     heute, sortiereSchritte, unterpunkteVon, fortschrittSchritt, fortschrittUnterpunkt,
-    schrittErledigt, unterpunktErledigt, zeitraumText, datumKurz
+    schrittErledigt, unterpunktErledigt, zeitraumText, datumKurz, termineZwischen, terminZeit
 } from '../rechnen.js';
-import { schrittFormular, unterpunktFormular, meilensteinFormular } from './formulare.js';
+import { schrittFormular, unterpunktFormular, meilensteinFormular, terminFormular } from './formulare.js';
 
 const offen = new Set();     // aufgeklappte Arbeitsschritte
 const MONATE = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
@@ -54,9 +55,11 @@ function zeichne(inhalt, stand) {
     neuSchritt.addEventListener('click', () => schrittFormular(stand, null, neuZeichnen));
     const neuMeilenstein = el('button', { class: 'knopf knopf-leise', text: '+ Meilenstein', attrs: { type: 'button' } });
     neuMeilenstein.addEventListener('click', () => meilensteinFormular(stand, null, neuZeichnen));
+    const neuTermin = el('button', { class: 'knopf knopf-leise', text: '+ Termin', attrs: { type: 'button' } });
+    neuTermin.addEventListener('click', () => terminFormular(stand, null, neuZeichnen));
     const neuLaden = el('button', { class: 'knopf knopf-leise', text: 'Neu laden', attrs: { type: 'button' } });
     neuLaden.addEventListener('click', () => laden(inhalt, true));
-    inhalt.append(el('div', { class: 'werkzeuge' }, [neuSchritt, neuMeilenstein, neuLaden]));
+    inhalt.append(el('div', { class: 'werkzeuge' }, [neuSchritt, neuMeilenstein, neuTermin, neuLaden]));
 
     const schritte = sortiereSchritte(stand.arbeitsschritte);
     const tag = heute();
@@ -66,6 +69,7 @@ function zeichne(inhalt, stand) {
     schritte.forEach((s) => { if (s.start) daten.push(s.start); if (s.ende) daten.push(s.ende); });
     stand.unterpunkte.forEach((u) => { if (u.start) daten.push(u.start); if (u.ende) daten.push(u.ende); });
     stand.meilensteine.forEach((m) => daten.push(m.datum));
+    stand.termine.forEach((t) => { if (t.wiederholung !== 'woechentlich' && t.datum) { daten.push(t.datum); if (t.ende) daten.push(t.ende); } });
     if (daten.length < 2) {
         inhalt.append(el('p', { class: 'hinweis', text: 'Noch keine Arbeitsschritte mit Datum. Lege einen mit Start und Ende an.' }));
         return;
@@ -113,6 +117,29 @@ function zeichne(inhalt, stand) {
             spur.append(k);
         });
         zeilen.push(el('div', { class: 'gantt-zeile' }, [el('div', { class: 'gantt-name', text: 'Meilensteine' }), spur]));
+    }
+
+    // Termine
+    const vorkommen = termineZwischen(stand.termine, von, bis);
+    if (vorkommen.length) {
+        const spur = el('div', { class: 'gantt-spur' });
+        spur.style.width = breite + 'px';
+        vorkommen.forEach((v) => {
+            const t = v.termin;
+            const text = t.titel + ' · ' + terminZeit(v);
+            const k = el('button', { class: 'gantt-termin', attrs: { type: 'button', 'data-art': t.art || 'termin', title: text, 'aria-label': 'Termin ' + text } });
+            if (v.ende !== v.datum || t.art === 'frei') {
+                k.style.left = x(v.datum) + 'px';
+                k.style.width = (x(v.ende) - x(v.datum) + proTag) + 'px';
+            } else {
+                k.style.left = (x(v.datum) + proTag / 2 - 5) + 'px';
+                k.style.width = '10px';
+                k.style.height = '10px';
+            }
+            k.addEventListener('click', () => terminFormular(stand, t, neuZeichnen));
+            spur.append(k);
+        });
+        zeilen.push(el('div', { class: 'gantt-zeile' }, [el('div', { class: 'gantt-name', text: 'Termine' }), spur]));
     }
 
     // Arbeitsschritte und aufgeklappte Unterpunkte

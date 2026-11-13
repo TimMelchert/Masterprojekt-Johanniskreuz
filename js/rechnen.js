@@ -1,4 +1,4 @@
-// Rechenhelfer für Arbeitsschritte, Unterpunkte, ToDos und Meilensteine (ohne Anzeige).
+// Rechenhelfer für Arbeitsschritte, Unterpunkte, ToDos, Meilensteine und Termine (ohne Anzeige).
 // Wird vom Zeitstrahl (arbeitsschritte.js), der ToDo-Seite und dem Gantt benutzt.
 
 // Heutiges Datum in Ortszeit als JJJJ-MM-TT
@@ -144,4 +144,73 @@ export function personen(todos) {
 
 export function istVon(todo, person) {
     return String(todo.wer || '').split(',').map((x) => x.trim().toLowerCase()).includes(person.toLowerCase());
+}
+
+// ---------- Termine ----------
+
+const TAG_MS = 86400000;
+const WOCHENTAGE = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+
+// Datum plus n Tage (JJJJ-MM-TT, in UTC gerechnet, damit die Sommerzeit nicht stört)
+export function plusTage(iso, n) {
+    const [j, m, t] = iso.split('-').map(Number);
+    return new Date(Date.UTC(j, m - 1, t) + n * TAG_MS).toISOString().slice(0, 10);
+}
+
+export function wochentag(iso) {
+    const [j, m, t] = iso.split('-').map(Number);
+    return WOCHENTAGE[new Date(Date.UTC(j, m - 1, t)).getUTCDay()];
+}
+
+// Ob ein Datum in einer freien Zeit (Art „frei“, einmalig) liegt
+function istFrei(frei, tag) {
+    return frei.some((f) => f.datum <= tag && tag <= (f.ende || f.datum));
+}
+
+// Alle Vorkommen der Termine zwischen von und bis (beide JJJJ-MM-TT, einschließlich).
+// Wöchentliche Termine werden aufgefächert (bis „bis“ oder bis zum Ende des Zeitraums), aber nicht in freien Zeiten.
+// Ergebnis: [{ termin, datum, ende }] nach Datum und Uhrzeit sortiert.
+export function termineZwischen(termine, von, bis) {
+    const frei = termine.filter((t) => t.art === 'frei' && t.wiederholung !== 'woechentlich');
+    const out = [];
+    termine.forEach((t) => {
+        if (!t.datum) return;
+        if (t.wiederholung === 'woechentlich') {
+            const letzter = t.bis && t.bis < bis ? t.bis : bis;
+            for (let d = t.datum, i = 0; d <= letzter && i < 400; d = plusTage(d, 7), i++) {
+                if (d >= von && (t.art === 'frei' || !istFrei(frei, d))) out.push({ termin: t, datum: d, ende: d });
+            }
+            return;
+        }
+        const ende = t.ende && t.ende > t.datum ? t.ende : t.datum;
+        if (ende >= von && t.datum <= bis) out.push({ termin: t, datum: t.datum, ende });
+    });
+    return out.sort((a, b) => a.datum.localeCompare(b.datum) || String(a.termin.uhrzeit || '').localeCompare(String(b.termin.uhrzeit || '')));
+}
+
+// Die nächsten n Vorkommen ab heute (laufende mehrtägige Termine zählen mit)
+export function naechsteTermine(termine, n, tag = heute()) {
+    return termineZwischen(termine, tag, plusTage(tag, 400)).slice(0, n);
+}
+
+// „Mo 16.11. · 18:00“ oder „21.12. – 3.1.2027“ (mehrtägig)
+export function terminZeit(v) {
+    if (v.ende && v.ende !== v.datum) return datumKurz(v.datum) + ' – ' + datumKurz(v.ende, true);
+    return wochentag(v.datum) + ' ' + datumKurz(v.datum) + (v.termin.uhrzeit ? ' · ' + v.termin.uhrzeit : '');
+}
+
+// Wiederkehrende Termine kurz beschrieben: „Jeden Mo · 18:00“
+export function wiederholungText(t) {
+    return 'Jeden ' + wochentag(t.datum) + (t.uhrzeit ? ' · ' + t.uhrzeit : '') + (t.bis ? ' · bis ' + datumKurz(t.bis, true) : '');
+}
+
+// Einmalige Termine je Arbeitsschritt für den Zeitstrahl: ein Termin gehört zum letzten Schritt, der an oder vor seinem Datum beginnt
+// (wie bei den Meilensteinen), sonst zum ersten. Ergebnis: Array parallel zu schritte, je Eintrag [{ termin, datum, ende }].
+export function termineJeSchritt(termine, schritte) {
+    const je = schritte.map(() => []);
+    if (!schritte.length) return je;
+    termineZwischen(termine.filter((t) => t.wiederholung !== 'woechentlich'), '0000-01-01', '9999-12-31').forEach((v) => {
+        je[Math.max(0, planIndex(schritte, v.datum))].push(v);
+    });
+    return je;
 }

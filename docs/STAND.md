@@ -4,7 +4,7 @@
 Lies sie zuerst, bei jeder Aufgabe. `CLAUDE.md` im Hauptordner zeigt nur hierher.
 Für eine neue Etappe kommt ein eigener Plan dazu (`docs/PLAN-ETAPPE-<n>.md`); am Ende der Etappe wird er hier eingearbeitet und gelöscht.
 
-- Version der App: **0.2.4** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
+- Version der App: **0.2.5** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
 - Repo: https://github.com/TimMelchert/Masterprojekt-Johanniskreuz (öffentlich)
 - Seite (App): https://timmelchert.github.io/Masterprojekt-Johanniskreuz/ (sobald GitHub Pages eingeschaltet ist)
 - Laufende Etappe: **1 „Arbeitsschritte, ToDos und Gantt“** (Plan: `docs/PLAN-ETAPPE-1.md`). Schritte 1.1 bis 1.4 sind gemerged. Nächster Schritt: 1.5 Termine und echte Arbeitsschritte aus dem Gantt der Gruppe.
@@ -227,7 +227,7 @@ unter „Info“ die Version prüfen.
 ### 2.3 Google Sheet (Tabs)
 
 Kopfzeile in Zeile 1 (klein, ohne Umlaute). Alle Daten-Blätter haben vorne `id, erstellt_am, geaendert_am, geloescht`.
-Die Spalten stehen im Skript in `FELDER_` (Etappe 1) und `SPAETER_`. `einrichten` legt fehlende Blätter und Spalten an und formatiert Text- und Datumsspalten als reinen Text.
+Die Spalten stehen im Skript in `FELDER_` (Etappe 1, mit Terminen) und `SPAETER_` (Etappe 3). `einrichten` legt fehlende Blätter und Spalten an und formatiert Text- und Datumsspalten als reinen Text.
 
 | Blatt | Spalten (nach den Standardspalten) |
 | --- | --- |
@@ -235,24 +235,19 @@ Die Spalten stehen im Skript in `FELDER_` (Etappe 1) und `SPAETER_`. `einrichten
 | `unterpunkte` | `arbeitsschritt_id, titel, start, ende, status, reihenfolge, beschreibung` (ab 1.1) |
 | `todos` | `unterpunkt_id, titel, wer, faellig, erledigt, erledigt_am, notiz` (ab 1.1; `unterpunkt_id` leer = allgemeines ToDo) |
 | `meilensteine` | `titel, datum, beschreibung` (ab 1.1) |
-| `termine` | `titel, organisation, datum, uhrzeit, ort, personen` (später; Namen nur in `personen`) |
+| `termine` | `titel, organisation, datum, uhrzeit, ort, personen, art, ende, wiederholung, bis, notiz` (ab 0.2.5; die ersten sechs gab es schon in 0.1; Namen nur hier im Sheet) |
 | `akteure` | `name, typ, feld, einfluss, interesse, notiz` (Etappe 3) |
 | `beziehungen` | `von, nach, art, staerke, quelle` (Etappe 3) |
 | `einstellungen` | nur `schluessel, wert` (ohne Standardspalten) |
 
 - `status`: `offen`, `in_arbeit`, `erledigt`. `farbe`: `gruen, blau, orange, gelb, rosa, lila, tuerkis, grau` (Werte in `css/base.css`, `--schritt-<farbe>`).
 - Datumsfelder als Text `JJJJ-MM-TT`. `erledigt_am` setzt nur das Skript.
+- Termine: `art` = `termin, treffen, interview, frei`; `wiederholung` = `einmalig, woechentlich`; `ende` = letzter Tag bei mehreren Tagen; `bis` = letzte Woche bei wöchentlichen. `uhrzeit` ist Text (z. B. „18:00“), eine Uhrzeit, die das Sheet als Zeit speichert, liest das Skript als `HH:mm`.
 - Das Blatt `aufgaben` aus 0.1 ist überholt; `einrichten` legt es nicht mehr an, die Person darf es löschen.
-- **Aktionen** (alle mit Passwort): `ping`, `liste` (alle vier Blätter der Etappe 1, ohne gelöschte), `speichern` (`blatt`, `daten`; ohne `id` = neu, sonst mit `geaendert_am` als Schutz vor Überschreiben, Fehler `geaendert`),
+- **Aktionen** (alle mit Passwort): `ping`, `liste` (alle Blätter aus `FELDER_`, ohne gelöschte), `speichern` (`blatt`, `daten`; ohne `id` = neu, sonst mit `geaendert_am` als Schutz vor Überschreiben, Fehler `geaendert`),
   `abhaken` (`id`, `wert`), `loeschen` (`blatt`, `id`; weich, Arbeitsschritt nimmt Unterpunkte und ToDos mit, Unterpunkt seine ToDos; Antwort `geloescht` je Blatt).
-  Schreiben nur mit `LockService`. Jede Eingabe geht durch `pruefeEingabe_` (Art, Länge, erlaubte Werte, Bezug existiert, Ende nicht vor Start).
+  Schreiben nur mit `LockService`. Jede Eingabe geht durch `pruefeEingabe_` (Art, Länge, erlaubte Werte, Bezug existiert, Ende nicht vor Start; bei Terminen Ende und „bis“ nicht vor dem Datum).
 
---- | --- |
-| `aufgaben` | Phasen, Arbeitsschritte und Unterschritte in einer Liste (`titel, feld, wer, start, ende, status, uebergeordnet, abhaengig_von, meilenstein`). Gantt und Zeitstrahl lesen beide daraus. |
-| `termine` | Gespräche und Termine (`titel, organisation, datum, uhrzeit, ort, personen`). Mit Passwort sichtbar; Namen nur in `personen`. |
-| `akteure` | `name, typ, feld, einfluss, interesse, notiz` |
-| `beziehungen` | `von, nach, art, staerke, quelle` |
-| `einstellungen` | nur `schluessel, wert` (ohne Standardspalten): Seafile-Links je Themenfeld, Name der Kümmerer:in der Woche, sonstige Texte |
 
 ---
 
@@ -273,10 +268,11 @@ Die Spalten stehen im Skript in `FELDER_` (Etappe 1) und `SPAETER_`. `einrichten
 - 0.2.2 (Schritt 1.3): Seite ToDos: allgemeine ToDos, dann je Arbeitsschritt und Unterpunkt zum Zuklappen, Filter Person (inkl. „Ohne Person“) und Status, Zähler offen/erledigt.
 - 0.2.3 (Schritt 1.4): Seite Zeitplan: Gantt mit Monaten und Wochen, Meilensteine, Balken je Arbeitsschritt mit Fortschritt, Unterpunkte mit Datum zum Aufklappen, Heute-Linie.
 - 0.2.4: Kacheln auf der Startseite nur mit Titel.
+- 0.2.5 (Schritt 1.5a): Termine (Gruppentreffen wöchentlich, Interviews, einzelne Termine, freie Zeiten) im Skript, im Zeitstrahl (wöchentliche oben, einmalige unter ihrem Abschnitt, „Nächste Termine“, „Alle Termine“) und im Gantt (Zeile „Termine“).
 
 ### 3.2 Offen
 
-- Die Person schickt die Liste der echten Arbeitsschritte, Unterpunkte und ToDos (Schritt 1.5).
+- Echte Arbeitsschritte, Unterpunkte, Meilensteine und Termine aus dem Gantt der Gruppe (Excel vom 12.11.2026) ins Sheet übernehmen (Schritt 1.5b). Die Person schickt die einzelnen Arbeitsschritte später noch genauer.
 
 ---
 
@@ -323,6 +319,15 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - Gantt: 14 px je Tag am PC, 10 px am Handy; Zeitraum vom frühesten bis spätesten Datum (mit Rand); Positionen über `element.style` (CSP-konform).
   Unterpunkte erscheinen nur mit Datum. Arbeitsschritte ohne Datum zeigen „ohne Datum“.
 
+### Termine (ab 0.2.5)
+
+- Wunsch der Person: Im Zeitstrahl stehen auch Termine, zum Beispiel montags abends das Treffen zu ToDos und Arbeitsschritten, und Interviewtermine.
+- Wöchentliche Termine stehen über dem Strahl („↻ Jeden Mo · 18:00“). Einmalige stehen unter dem Arbeitsschritt, zu dem sie gehören
+  (wie Meilensteine: letzter Schritt, der an oder vor ihrem Datum beginnt). Darunter „Nächste Termine“ (die nächsten fünf) und „Alle Termine“ zum Aufklappen.
+- Wöchentliche Termine fallen in freien Zeiten (Art „frei“, zum Beispiel Weihnachtsferien) aus. Ohne „bis“ laufen sie bis zum Ende des Zeitplans.
+- Gantt: Zeile „Termine“ mit Punkten, freie Zeiten schraffiert. Farben: Termin blau (B), Treffen grau (G), Interview rosa (E).
+- Interviewpartner:innen nur in `personen` bzw. `organisation`, nur im Sheet, nur mit Passwort sichtbar.
+
 ### Karten (Ablauf für QGIS)
 
 1. In QGIS arbeiten wie gewohnt (vermutlich ETRS89 / UTM 32N, EPSG:25832).
@@ -355,7 +360,7 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
   `ui/dom.js` (`el`, `leeren`, `sichereUrl`), `ui/aussehen.js`, `ui/fenster.js` (ab 1.1: `zeigeFenster` mit `<dialog>`, `frage`), `ui/formular.js` (ab 1.1: `formularFenster` mit Feldarten text, lang, datum, wahl, farbe, haken).
 - `js/rechnen.js` (ab 1.2): Sortieren, Fortschritt, `planIndex`, `standIndex`, `vergleichText`, `zeitstrahlReihe`, `personen`, Datumstexte.
 - `js/ui/meldung.js` (ab 1.2): `zeigeMeldung` (kurze Meldung unten).
-- `js/views/`: `arbeitsschritte.js` (ab 1.2, Zeitstrahl), `todos.js` (ab 1.3, ToDo-Seite), `zeitplan.js` (ab 1.4, Gantt), `formulare.js` (ab 1.2, Formulare für alle vier Blätter), `todo-zeile.js` (ab 1.2, ToDo mit Haken), `start.js` (Anmeldung bzw. Kacheln), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
+- `js/views/`: `arbeitsschritte.js` (ab 1.2, Zeitstrahl), `todos.js` (ab 1.3, ToDo-Seite), `zeitplan.js` (ab 1.4, Gantt), `formulare.js` (ab 1.2, Formulare für Arbeitsschritte, Unterpunkte, ToDos, Meilensteine, ab 0.2.5 Termine), `todo-zeile.js` (ab 1.2, ToDo mit Haken), `start.js` (Anmeldung bzw. Kacheln), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
 - `icons/`: `icon.svg`, `icon-180.png` (Apple), `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`.
 - `apps-script/Code.gs`: das Google-Skript (Kopie; die echte Fassung liegt im Apps-Script-Editor des Sheets).
 - `docs/STAND.md`: diese Datei. `docs/PLAN-ETAPPE-1.md`: Plan der laufenden Etappe.
@@ -383,3 +388,4 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - 0.2.2 (13.11.2026): Schritt 1.3 ToDo-Seite.
 - 0.2.3 (13.11.2026): Schritt 1.4 Gantt.
 - 0.2.4 (13.11.2026): Startseiten-Kacheln ohne Beschreibung.
+- 0.2.5 (13.11.2026): Termine im Skript, Zeitstrahl und Gantt.
