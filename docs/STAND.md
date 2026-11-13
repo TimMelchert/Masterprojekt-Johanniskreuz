@@ -4,10 +4,10 @@
 Lies sie zuerst, bei jeder Aufgabe. `CLAUDE.md` im Hauptordner zeigt nur hierher.
 Für eine neue Etappe kommt ein eigener Plan dazu (`docs/PLAN-ETAPPE-<n>.md`); am Ende der Etappe wird er hier eingearbeitet und gelöscht.
 
-- Version der App: **0.2.1** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
+- Version der App: **0.2.2** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
 - Repo: https://github.com/TimMelchert/Masterprojekt-Johanniskreuz (öffentlich)
 - Seite (App): https://timmelchert.github.io/Masterprojekt-Johanniskreuz/ (sobald GitHub Pages eingeschaltet ist)
-- Laufende Etappe: **1 „Arbeitsschritte, ToDos und Gantt“** (Plan: `docs/PLAN-ETAPPE-1.md`). Schritte 1.1 „Daten“ und 1.2 „Zeitstrahl“ liegen als Pull Requests vor. Nächster Schritt: 1.3 ToDos-Seite.
+- Laufende Etappe: **1 „Arbeitsschritte, ToDos und Gantt“** (Plan: `docs/PLAN-ETAPPE-1.md`). Schritte 1.1 bis 1.3 liegen als Pull Requests vor. Nächster Schritt: 1.4 Gantt.
 
 Inhalt: 1 Arbeitsregeln · 2 Aufbau · 3 Aktueller Stand und Offen · 4 Festlegungen je Bereich · 5 Technik-Merkzettel ·
 6 Dateiübersicht · 7 Pläne · 8 Geschichte
@@ -270,6 +270,7 @@ Die Spalten stehen im Skript in `FELDER_` (Etappe 1) und `SPAETER_`. `einrichten
   Die Seiten Arbeitsschritte, ToDos und Zeitplan sind noch Platzhalter (1.2 bis 1.4).
 - 0.2.1 (Schritt 1.2): Seite Arbeitsschritte: horizontaler Zeitstrahl mit Meilensteinen, Pfeile „Plan“ und „Stand“, Satz „im Plan / hinter / vor dem Plan“,
   Details des gewählten Schritts mit aufklappbaren Unterpunkten und ToDos zum Abhaken, Formulare für alles, allgemeine ToDos darunter.
+- 0.2.2 (Schritt 1.3): Seite ToDos: allgemeine ToDos, dann je Arbeitsschritt und Unterpunkt zum Zuklappen, Filter Person (inkl. „Ohne Person“) und Status, Zähler offen/erledigt.
 
 ### 3.2 Offen
 
@@ -314,6 +315,8 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - Meilensteine stehen im Zeitstrahl hinter dem letzten Arbeitsschritt, der vor oder an ihrem Datum beginnt.
 - Neue Arbeitsschritte bekommen die erste noch nicht benutzte Farbe.
 - Erledigte ToDos bleiben stehen (ausgegraut, durchgestrichen), offene zuerst, dann nach Fälligkeit.
+- ToDo-Seite: Filter (Person, Status) und zugeklappte Gruppen gelten nur, solange die Seite offen ist; nichts davon im Gerät (keine Namen im Gerät).
+  Personen sind freiwillig: Feld `wer`, mehrere mit Komma; der Filter liest die Namen aus allen ToDos.
 
 ### Karten (Ablauf für QGIS)
 
@@ -341,13 +344,13 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 
 - Hauptordner: `CLAUDE.md` (zeigt nur hierher), `README.md`, `index.html`, `manifest.webmanifest`, `sw.js`, `.nojekyll`.
   `LIZENZEN.md` kommt mit der ersten Bibliothek (Etappe 2).
-- `css/`: `base.css` (Farben, hell und dunkel), `layout.css` (Kopf, Leiste unten am Handy, links am PC), `components.css` (Abschnitte 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte).
+- `css/`: `base.css` (Farben, hell und dunkel), `layout.css` (Kopf, Leiste unten am Handy, links am PC), `components.css` (Abschnitte 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte, 7 ToDo-Seite).
 - `js/`: `daten.js` (ab 1.1: `ladeDaten`, `speichere`, `hake`, `loesche`, `vergessen`, Listen `STATUS`, `FARBEN`; Daten nur im Arbeitsspeicher), `app.js` (Routing, Leiste, Update-Hinweis, Schutz vor fremden Rahmen), `config.js` (VERSION, `API_URL`, `features`, `BEREICHE`, `FELDER`),
   `api.js` (`api(action, daten)`, `pruefePasswort`, `ApiFehler`), `store.js` (`lesen`, `schreiben`, `abmelden`, `istAngemeldet`),
   `ui/dom.js` (`el`, `leeren`, `sichereUrl`), `ui/aussehen.js`, `ui/fenster.js` (ab 1.1: `zeigeFenster` mit `<dialog>`, `frage`), `ui/formular.js` (ab 1.1: `formularFenster` mit Feldarten text, lang, datum, wahl, farbe, haken).
 - `js/rechnen.js` (ab 1.2): Sortieren, Fortschritt, `planIndex`, `standIndex`, `vergleichText`, `zeitstrahlReihe`, `personen`, Datumstexte.
 - `js/ui/meldung.js` (ab 1.2): `zeigeMeldung` (kurze Meldung unten).
-- `js/views/`: `arbeitsschritte.js` (ab 1.2, Zeitstrahl), `formulare.js` (ab 1.2, Formulare für alle vier Blätter), `todo-zeile.js` (ab 1.2, ToDo mit Haken), `start.js` (Anmeldung bzw. Kacheln), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
+- `js/views/`: `arbeitsschritte.js` (ab 1.2, Zeitstrahl), `todos.js` (ab 1.3, ToDo-Seite), `formulare.js` (ab 1.2, Formulare für alle vier Blätter), `todo-zeile.js` (ab 1.2, ToDo mit Haken), `start.js` (Anmeldung bzw. Kacheln), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
 - `icons/`: `icon.svg`, `icon-180.png` (Apple), `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`.
 - `apps-script/Code.gs`: das Google-Skript (Kopie; die echte Fassung liegt im Apps-Script-Editor des Sheets).
 - `docs/STAND.md`: diese Datei. `docs/PLAN-ETAPPE-1.md`: Plan der laufenden Etappe.
@@ -372,3 +375,4 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - 0.1.2 (13.11.2026): Umbenannt in „Masterprojekt Johanniskreuz“, T-Lab-Link raus.
 - 0.2.0 (13.11.2026): Schritt 1.1 Daten: Blätter und Aktionen im Skript, `js/daten.js`, Fenster und Formulare, Leiste mit „ToDos“.
 - 0.2.1 (13.11.2026): Schritt 1.2 Zeitstrahl der Arbeitsschritte.
+- 0.2.2 (13.11.2026): Schritt 1.3 ToDo-Seite.
