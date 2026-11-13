@@ -1,7 +1,12 @@
 // Speicher im Gerät (localStorage): nur Passwort und Wahl beim Aussehen (Liste in docs/STAND.md 5).
-// Alle Schlüssel beginnen mit "pfalzturm_". Abmelden löscht alle.
+// Alle Schlüssel beginnen mit "johanniskreuz_" (bis 0.1.1 "pfalzturm_", die werden beim Start gelöscht). Abmelden löscht alle.
 
-const VORSILBE = 'pfalzturm_';
+const VORSILBE = 'johanniskreuz_';
+
+// Alte Schlüssel aus 0.1.x (Vorsilbe pfalzturm_) entfernen. Danach einmal neu anmelden.
+try {
+    Object.keys(localStorage).filter((k) => k.startsWith('pfalzturm_')).forEach((k) => localStorage.removeItem(k));
+} catch (e) { /* kein Speicher */ }
 
 export function lesen(name, ersatz = null) {
     try {

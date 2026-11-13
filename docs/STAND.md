@@ -1,13 +1,13 @@
-# STAND – Projektseite Pfalzturm
+# STAND – Masterprojekt Johanniskreuz
 
 **Diese Datei ist die einzige Doku-Datei für den Agenten:** Arbeitsregeln, Aufbau, aktueller Stand, Festlegungen und Pläne.
 Lies sie zuerst, bei jeder Aufgabe. `CLAUDE.md` im Hauptordner zeigt nur hierher.
 Für eine neue Etappe kommt ein eigener Plan dazu (`docs/PLAN-ETAPPE-<n>.md`); am Ende der Etappe wird er hier eingearbeitet und gelöscht.
 
-- Version der App: **0.1.1** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
+- Version der App: **0.1.2** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
 - Repo: https://github.com/TimMelchert/Masterprojekt-Johanniskreuz (öffentlich)
 - Seite (App): https://timmelchert.github.io/Masterprojekt-Johanniskreuz/ (sobald GitHub Pages eingeschaltet ist)
-- Laufende Etappe: **0 „Start“**. Schritt 0.1.1 liegt als Pull Request vor. Nächster Schritt: Etappe 1 „Zeitplan“ (die Person beschreibt den Zeitplan der Gruppe).
+- Laufende Etappe: **0 „Start“**. Schritt 0.1.2 „Umbenennen“ liegt als Pull Request vor. Nächste Etappe: 1 „Arbeitsschritte, ToDos und Gantt“ (Plan in `docs/PLAN-ETAPPE-1.md`, kommt mit Schritt 1.1).
 
 Inhalt: 1 Arbeitsregeln · 2 Aufbau · 3 Aktueller Stand und Offen · 4 Festlegungen je Bereich · 5 Technik-Merkzettel ·
 6 Dateiübersicht · 7 Pläne · 8 Geschichte
@@ -20,7 +20,7 @@ Abgeleitet aus den Arbeitsregeln von Thetadex (1.3.18) und AktionsDeck Landau (1
 
 ### 1.1 Worum es geht und mit wem du arbeitest
 
-Eine Web-App (PWA) für die Projektgruppe des Masterprojekts „Pfalzturm Johanniskreuz“ (RPTU, WiSe 2026/27, Abgabe 24.03.2027).
+Eine Web-App (PWA) „Masterprojekt Johanniskreuz“ für die Projektgruppe des Masterprojekts zum Pfalzturm am Johanniskreuz (RPTU, WiSe 2026/27, Abgabe 24.03.2027).
 Sie dient der **Übersicht und Präsentation**: interaktive Karten und Pläne mit Ebenen, Zeitplan (Gantt), Zeitstrahl der Arbeitsschritte
 mit Unterpunkten, Akteursnetz. Später vielleicht mehr.
 
@@ -266,7 +266,8 @@ E Turm & Alternativen `#F8BBD0` · F Theorie / kritische Landforschung `#D1C4E9`
 Kopfzeile Dunkelblau `#1F3A4D` (Tabellenköpfe im Cockpit). Bereiche in der Leiste: Karten A, Zeitplan G, Arbeitsschritte D, Akteure C.
 Icon: schlanke Gitterschale aus Holz mit Rautenmuster (wie der Entwurf des T-Lab RPTU) über grüner Wiese auf Dunkelblau (`icons/icon.svg`, PNGs daraus erzeugt).
 Die Startseite zeigt keine Themenfelder (Entscheidung 13.11.2026); die Farben bleiben für Bereiche und spätere Inhalte.
-Bilder des T-Lab (Visualisierungen) kommen nicht ins Repo, solange keine Erlaubnis da ist; die App verlinkt die Seite des T-Lab.
+Bilder des T-Lab (Visualisierungen) kommen nicht ins Repo, solange keine Erlaubnis da ist. Kein Link zum T-Lab in der App (Wunsch der Person, 0.1.2).
+**Name:** „Masterprojekt Johanniskreuz“ (seit 0.1.2, Wunsch der Person), kurz „Johanniskreuz“ auf dem Startbildschirm. „Pfalzturm“ steht nur noch im Untertitel.
 
 ### Bibliotheken (Ausnahmen von „keine Fremdteile“)
 
@@ -301,7 +302,7 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - **GitHub Pages hängt** (Erfahrung aus Thetadex): Bleibt „pages build and deployment“ auf „Queued“, liegt es an GitHub. Erst „Re-run all jobs“.
 - **Service Worker:** App-Dateien zwischenspeichern (`<name>-<VERSION>`, beim Installieren mit `cache: 'reload'`), Anfragen an das Skript nie aus dem Zwischenspeicher.
   Neu laden nach einem Update nur über „Jetzt neu laden“.
-- **Im Gerät (localStorage):** nur Passwort (`pfalzturm_passwort`) und Wahl beim Aussehen (`pfalzturm_aussehen`). Schlüssel mit Vorsilbe `pfalzturm_`. Abmelden löscht alles.
+- **Im Gerät (localStorage):** nur Passwort (`johanniskreuz_passwort`) und Wahl beim Aussehen (`johanniskreuz_aussehen`). Bis 0.1.1 hieß die Vorsilbe `pfalzturm_`; `js/store.js` löscht alte Schlüssel beim Start.  Abmelden löscht alles.
 - **Barrierefreiheit:** genau eine `h1` je Seite, jedes Feld mit Beschriftung, Fenster mit `role="dialog"`. Karten bekommen eine Textliste der Ebenen.
 
 ---
@@ -336,3 +337,4 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - 13.11.2026: Arbeitsregeln aus Thetadex und AktionsDeck übernommen und angepasst.
 - 0.1.0 (13.11.2026): Schritt 0.1 Grundgerüst.
 - 0.1.1 (13.11.2026): Skript-Adresse, Startseite ohne Themenfelder, neues Icon.
+- 0.1.2 (13.11.2026): Umbenannt in „Masterprojekt Johanniskreuz“, T-Lab-Link raus.

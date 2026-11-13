@@ -1,4 +1,4 @@
-// Pfalzturm – Start, Leiste, Routing (#/<bereich>) und Hinweis auf neue Version.
+// Masterprojekt Johanniskreuz – Start, Leiste, Routing (#/<bereich>) und Hinweis auf neue Version.
 // Ohne Anmeldung gibt es nur die Startseite und „Info“ (docs/STAND.md 2.1).
 
 import { VERSION, features, BEREICHE } from './config.js';
@@ -115,7 +115,7 @@ if (imRahmen) {
 } else {
     window.addEventListener('hashchange', zeigeAnsicht);
     // Anmelden, Abmelden oder Passwort ungültig: Leiste und Seite neu zeichnen
-    window.addEventListener('pfalzturm-abgemeldet', zeigeAnsicht);
+    window.addEventListener('johanniskreuz-abgemeldet', zeigeAnsicht);
     zeigeAnsicht();
 
     if ('serviceWorker' in navigator) {
