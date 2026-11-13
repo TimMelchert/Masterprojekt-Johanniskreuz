@@ -9,8 +9,8 @@ import { pruefePasswort } from '../api.js';
 export function render(container, ctx) {
     container.append(el('section', { class: 'start-kopf' }, [
         el('img', { class: 'start-logo', attrs: { src: 'icons/icon.svg', alt: '', width: 96, height: 96 } }),
-        el('h1', { text: 'Pfalzturm Johanniskreuz' }),
-        el('p', { class: 'leise', text: 'Masterprojekt WiSe 2026/27 · Arbeitsseite der Projektgruppe' })
+        el('h1', { text: 'Masterprojekt Johanniskreuz' }),
+        el('p', { class: 'leise', text: 'Pfalzturm · WiSe 2026/27 · Arbeitsseite der Projektgruppe' })
     ]));
 
     if (!ctx.angemeldet) {

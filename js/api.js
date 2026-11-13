@@ -22,7 +22,7 @@ export async function api(action, daten = {}) {
     } catch (e) {
         if (e.code === 'pin') {
             abmelden();
-            window.dispatchEvent(new Event('pfalzturm-abgemeldet'));
+            window.dispatchEvent(new Event('johanniskreuz-abgemeldet'));
         }
         throw e;
     }

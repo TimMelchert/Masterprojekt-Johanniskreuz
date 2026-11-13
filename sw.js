@@ -1,7 +1,7 @@
-// Pfalzturm – Service Worker
+// Masterprojekt Johanniskreuz – Service Worker
 // VERSION muss exakt gleich sein wie in js/config.js (bei jeder Änderung beide hochzählen).
-const VERSION = '0.1.1';
-const CACHE_NAME = 'pfalzturm-' + VERSION;
+const VERSION = '0.1.2';
+const CACHE_NAME = 'johanniskreuz-' + VERSION;
 
 // App-Hülle: alle Dateien, die die App zum Starten braucht. Neue Dateien hier eintragen.
 // Daten aus dem Google Sheet kommen nie hierher (siehe docs/STAND.md 1.5).
@@ -38,7 +38,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k.startsWith('pfalzturm-') && k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => (k.startsWith('johanniskreuz-') || k.startsWith('pfalzturm-')) && k !== CACHE_NAME).map((k) => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
 });

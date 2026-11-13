@@ -7,10 +7,7 @@ import { AUSSEHEN, aktuellesAussehen, setzeAussehen } from '../ui/aussehen.js';
 export function render(container, ctx) {
     container.append(
         el('h1', { text: 'Info' }),
-        el('p', { text: 'Arbeitsseite der Projektgruppe „Pfalzturm Johanniskreuz“ (Masterprojekt WiSe 2026/27). Alle Dokumente liegen weiter in Seafile.' }),
-        el('p', {}, [
-            el('a', { text: 'Der geplante Pfalzturm beim T-Lab der RPTU', attrs: { href: 'https://tlab.architektur.rptu.de/forschungsprojekte/Pfalzturm', rel: 'noopener', target: '_blank' } })
-        ]),
+        el('p', { text: 'Arbeitsseite der Projektgruppe im Masterprojekt Johanniskreuz (Pfalzturm, WiSe 2026/27). Alle Dokumente liegen weiter in Seafile.' }),
         el('p', { class: 'leise', text: 'Version ' + ctx.version })
     );
 
@@ -30,7 +27,7 @@ export function render(container, ctx) {
         knopf.addEventListener('click', () => {
             abmelden();
             location.hash = '#/';
-            window.dispatchEvent(new Event('pfalzturm-abgemeldet'));
+            window.dispatchEvent(new Event('johanniskreuz-abgemeldet'));
         });
         container.append(el('section', { class: 'abschnitt' }, [
             el('h2', { text: 'Dieses Gerät' }),
