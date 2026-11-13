@@ -1,4 +1,4 @@
-/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare. */
+/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte. */
 
 /* ---------- 1 Grundbausteine ---------- */
 
@@ -186,3 +186,200 @@ textarea.eingabe { resize: vertical; min-height: 5rem; }
     clip: rect(0 0 0 0);
     white-space: nowrap;
 }
+
+/* ---------- 5 ToDos (Zeilen, auch im Zeitstrahl) ---------- */
+
+.werkzeuge { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 30;
+    max-width: calc(100vw - 2rem);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    background: var(--kopf-grund);
+    color: var(--kopf-schrift);
+    box-shadow: 0 4px 16px var(--schatten);
+}
+
+.todo-liste { list-style: none; margin: 0.25rem 0 0.5rem; padding: 0; }
+
+.todo { display: flex; align-items: flex-start; gap: 0.25rem; border-top: 1px solid var(--linie); }
+.todo:first-child { border-top: none; }
+
+.todo-haken-feld { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; cursor: pointer; }
+.todo-haken { width: 1.3rem; height: 1.3rem; cursor: pointer; }
+
+.todo-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-height: 44px;
+    justify-content: center;
+    padding: 0.4rem 0.25rem;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.todo-infos { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; font-size: 0.85rem; }
+.todo-wer { font-weight: 600; }
+.todo-ueberfaellig { color: var(--fehler); font-weight: 600; }
+
+.todo-erledigt .todo-text { color: var(--schrift-leise); }
+.todo-erledigt .todo-titel { text-decoration: line-through; }
+
+/* ---------- 6 Arbeitsschritte (Zeitstrahl) ---------- */
+
+.pfeil-legende { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.6rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
+.pfeil-satz { flex-basis: 100%; }
+
+.pfeil-marke, .pfeil { font-weight: 700; font-size: 0.8rem; white-space: nowrap; border-radius: 4px; padding: 0.05rem 0.35rem; }
+.pfeil-plan { color: var(--schrift); border: 2px solid var(--schrift); }
+.pfeil-stand { color: var(--knopf-schrift); background: var(--knopf-grund); border: 2px solid var(--knopf-grund); }
+
+.strahl-rahmen { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 0.5rem; -webkit-overflow-scrolling: touch; }
+
+.strahl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 0.35rem;
+    width: max-content;
+    min-width: 100%;
+}
+
+.strahl-teil { display: flex; }
+
+.pfeile { display: flex; gap: 0.25rem; justify-content: center; min-height: 1.7rem; align-items: flex-end; padding-bottom: 0.25rem; }
+
+.abschnitt-knopf {
+    display: flex;
+    flex-direction: column;
+    width: 11.5rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--schrift);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.abschnitt-band {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-height: 5.2rem;
+    padding: 0.6rem 0.7rem;
+    background: var(--schritt);
+    color: var(--schrift-auf-feld);
+    border-radius: 8px 8px 0 0;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%, 12px 50%);
+    padding-left: 1.1rem;
+    padding-right: 1.2rem;
+}
+
+.abschnitt-titel { font-weight: 700; line-height: 1.2; }
+.abschnitt-zeit { font-size: 0.82rem; }
+
+.abschnitt-stand { display: flex; justify-content: space-between; gap: 0.5rem; padding: 0.35rem 0.4rem 0.2rem; font-size: 0.82rem; color: var(--schrift-leise); }
+
+.balken { display: block; height: 6px; margin: 0 0.4rem; border-radius: 3px; background: var(--linie); overflow: hidden; }
+.balken-voll { display: block; height: 100%; background: var(--schritt); }
+.balken-voll[data-anteil="0"] { width: 0%; }
+.balken-voll[data-anteil="1"] { width: 10%; }
+.balken-voll[data-anteil="2"] { width: 20%; }
+.balken-voll[data-anteil="3"] { width: 30%; }
+.balken-voll[data-anteil="4"] { width: 40%; }
+.balken-voll[data-anteil="5"] { width: 50%; }
+.balken-voll[data-anteil="6"] { width: 60%; }
+.balken-voll[data-anteil="7"] { width: 70%; }
+.balken-voll[data-anteil="8"] { width: 80%; }
+.balken-voll[data-anteil="9"] { width: 90%; }
+.balken-voll[data-anteil="10"] { width: 100%; }
+
+.abschnitt-fertig .abschnitt-band { opacity: 0.55; }
+
+.abschnitt-knopf[aria-pressed="true"] { outline: 3px solid var(--schrift); outline-offset: 3px; border-radius: 8px; }
+
+.meilenstein {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 7rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--schrift);
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
+}
+
+.raute { width: 1.3rem; height: 1.3rem; margin: 1.7rem 0 0.6rem; background: var(--schrift); transform: rotate(45deg); }
+.meilenstein-datum { font-weight: 700; font-size: 0.85rem; }
+.meilenstein-titel { font-size: 0.82rem; line-height: 1.2; hyphens: auto; overflow-wrap: break-word; }
+
+.details {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border: 1px solid var(--linie);
+    border-top: 8px solid var(--schritt);
+    border-radius: 10px;
+    background: var(--kachel);
+}
+
+.details-kopf { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1rem; }
+.details-kopf h2 { margin-bottom: 0.2rem; }
+.details-kopf .werkzeuge { margin-bottom: 0.5rem; }
+.beschreibung { white-space: pre-line; }
+
+.unterpunkte { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.unterpunkt { border-top: 1px solid var(--linie); padding: 0.15rem 0; }
+
+.unterpunkt-kopf { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem; }
+.unterpunkt-knoepfe { display: flex; gap: 0.25rem; }
+
+.toggler {
+    flex: 1 1 14rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.6rem;
+    min-height: 44px;
+    padding: 0.25rem 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.toggler-pfeil { width: 1.2rem; font-size: 1.1rem; }
+.unterpunkt-titel { font-weight: 600; }
+.unterpunkt-fertig { text-decoration: line-through; color: var(--schrift-leise); }
+
+.knopf-klein {
+    min-height: 44px;
+    padding: 0 0.7rem;
+    border: 1px solid var(--linie);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--schrift);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.unterpunkt .todo-liste, .einrueck { margin-left: 1.45rem; }
