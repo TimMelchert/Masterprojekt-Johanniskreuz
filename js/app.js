@@ -5,6 +5,7 @@ import { VERSION, features, BEREICHE } from './config.js';
 import { el, leeren } from './ui/dom.js';
 import { istAngemeldet } from './store.js';
 import { wendeAussehenAn } from './ui/aussehen.js';
+import { vergessen } from './daten.js';
 import * as start from './views/start.js';
 import * as info from './views/info.js';
 import * as platzhalter from './views/platzhalter.js';
@@ -115,7 +116,7 @@ if (imRahmen) {
 } else {
     window.addEventListener('hashchange', zeigeAnsicht);
     // Anmelden, Abmelden oder Passwort ungültig: Leiste und Seite neu zeichnen
-    window.addEventListener('johanniskreuz-abgemeldet', zeigeAnsicht);
+    window.addEventListener('johanniskreuz-abgemeldet', () => { vergessen(); zeigeAnsicht(); });
     zeigeAnsicht();
 
     if ('serviceWorker' in navigator) {

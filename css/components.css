@@ -1,4 +1,4 @@
-/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info. */
+/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare. */
 
 /* ---------- 1 Grundbausteine ---------- */
 
@@ -116,3 +116,73 @@
 .wahl legend { font-weight: 600; margin-bottom: 0.5rem; font-size: 1.2rem; }
 .wahl-feld { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; cursor: pointer; }
 .wahl-feld input { width: 1.2rem; height: 1.2rem; }
+
+/* ---------- 4 Fenster und Formulare ---------- */
+
+.fenster {
+    width: min(34rem, calc(100vw - 1.5rem));
+    max-height: calc(100vh - 2rem);
+    padding: 1rem 1.25rem 1.25rem;
+    border: 1px solid var(--linie);
+    border-radius: 12px;
+    background: var(--kachel);
+    color: var(--schrift);
+}
+
+.fenster::backdrop { background: var(--schatten); }
+
+.fenster-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
+.fenster-kopf h2 { margin: 0.4rem 0 0; }
+
+.fenster-x {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--schrift);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.formular { display: grid; gap: 0.9rem; }
+.feld { display: grid; gap: 0.3rem; }
+.feld label { font-weight: 600; }
+.feld p { margin: 0; }
+textarea.eingabe { resize: vertical; min-height: 5rem; }
+
+.knoepfe { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
+
+.knopf-rot { background: var(--fehler); color: var(--knopf-schrift); }
+.knopf-rot-leise { background: transparent; color: var(--fehler); border: 1px solid var(--fehler); margin-right: auto; }
+
+.haken-feld { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; font-weight: 600; cursor: pointer; }
+.haken-feld input { width: 1.3rem; height: 1.3rem; }
+
+.farbwahl { border: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.farbwahl legend { font-weight: 600; margin-bottom: 0.3rem; padding: 0; }
+.farbe-feld { position: relative; display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer; }
+.farbe-feld input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.farbe-punkt { width: 32px; height: 32px; border-radius: 50%; background: var(--schritt); border: 2px solid var(--linie); }
+.farbe-feld input:checked + .farbe-punkt { outline: 3px solid var(--schrift); outline-offset: 2px; }
+.farbe-feld input:focus-visible + .farbe-punkt { outline: 3px solid var(--fokus); outline-offset: 4px; }
+
+/* Farbe eines Arbeitsschritts: data-farbe setzt --schritt */
+[data-farbe="gruen"] { --schritt: var(--schritt-gruen); }
+[data-farbe="blau"] { --schritt: var(--schritt-blau); }
+[data-farbe="orange"] { --schritt: var(--schritt-orange); }
+[data-farbe="gelb"] { --schritt: var(--schritt-gelb); }
+[data-farbe="rosa"] { --schritt: var(--schritt-rosa); }
+[data-farbe="lila"] { --schritt: var(--schritt-lila); }
+[data-farbe="tuerkis"] { --schritt: var(--schritt-tuerkis); }
+[data-farbe="grau"] { --schritt: var(--schritt-grau); }
+
+.nur-leser {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
