@@ -92,7 +92,7 @@
 
 .kacheln {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
     gap: 1rem;
     margin-top: 1.5rem;
 }
@@ -108,7 +108,7 @@
 }
 
 .kachel:hover { border-color: var(--schrift-leise); border-left-color: var(--feld); }
-.kachel p { margin: 0; color: var(--schrift-leise); }
+.kachel h2 { margin: 0; font-size: 1.15rem; }
 
 /* ---------- 3 Info ---------- */
 

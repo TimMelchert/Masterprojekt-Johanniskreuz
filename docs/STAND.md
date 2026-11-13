@@ -4,10 +4,10 @@
 Lies sie zuerst, bei jeder Aufgabe. `CLAUDE.md` im Hauptordner zeigt nur hierher.
 Für eine neue Etappe kommt ein eigener Plan dazu (`docs/PLAN-ETAPPE-<n>.md`); am Ende der Etappe wird er hier eingearbeitet und gelöscht.
 
-- Version der App: **0.2.3** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
+- Version der App: **0.2.4** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
 - Repo: https://github.com/TimMelchert/Masterprojekt-Johanniskreuz (öffentlich)
 - Seite (App): https://timmelchert.github.io/Masterprojekt-Johanniskreuz/ (sobald GitHub Pages eingeschaltet ist)
-- Laufende Etappe: **1 „Arbeitsschritte, ToDos und Gantt“** (Plan: `docs/PLAN-ETAPPE-1.md`). Schritte 1.1 bis 1.4 liegen als Pull Requests vor. Nächster Schritt: 1.5 echte Arbeitsschritte eintragen (wartet auf die Liste der Person).
+- Laufende Etappe: **1 „Arbeitsschritte, ToDos und Gantt“** (Plan: `docs/PLAN-ETAPPE-1.md`). Schritte 1.1 bis 1.4 sind gemerged. Nächster Schritt: 1.5 Termine und echte Arbeitsschritte aus dem Gantt der Gruppe.
 
 Inhalt: 1 Arbeitsregeln · 2 Aufbau · 3 Aktueller Stand und Offen · 4 Festlegungen je Bereich · 5 Technik-Merkzettel ·
 6 Dateiübersicht · 7 Pläne · 8 Geschichte
@@ -272,6 +272,7 @@ Die Spalten stehen im Skript in `FELDER_` (Etappe 1) und `SPAETER_`. `einrichten
   Details des gewählten Schritts mit aufklappbaren Unterpunkten und ToDos zum Abhaken, Formulare für alles, allgemeine ToDos darunter.
 - 0.2.2 (Schritt 1.3): Seite ToDos: allgemeine ToDos, dann je Arbeitsschritt und Unterpunkt zum Zuklappen, Filter Person (inkl. „Ohne Person“) und Status, Zähler offen/erledigt.
 - 0.2.3 (Schritt 1.4): Seite Zeitplan: Gantt mit Monaten und Wochen, Meilensteine, Balken je Arbeitsschritt mit Fortschritt, Unterpunkte mit Datum zum Aufklappen, Heute-Linie.
+- 0.2.4: Kacheln auf der Startseite nur mit Titel.
 
 ### 3.2 Offen
 
@@ -289,6 +290,7 @@ E Turm & Alternativen `#F8BBD0` · F Theorie / kritische Landforschung `#D1C4E9`
 Kopfzeile Dunkelblau `#1F3A4D` (Tabellenköpfe im Cockpit). Bereiche in der Leiste: Karten A, Zeitplan G, Arbeitsschritte D, Akteure C.
 Icon: schlanke Gitterschale aus Holz mit Rautenmuster (wie der Entwurf des T-Lab RPTU) über grüner Wiese auf Dunkelblau (`icons/icon.svg`, PNGs daraus erzeugt).
 Die Startseite zeigt keine Themenfelder (Entscheidung 13.11.2026); die Farben bleiben für Bereiche und spätere Inhalte.
+Die Kacheln auf der Startseite zeigen nur den Titel, keine Beschreibung (Wunsch der Person, 0.2.4).
 Bilder des T-Lab (Visualisierungen) kommen nicht ins Repo, solange keine Erlaubnis da ist. Kein Link zum T-Lab in der App (Wunsch der Person, 0.1.2).
 **Name:** „Masterprojekt Johanniskreuz“ (seit 0.1.2, Wunsch der Person), kurz „Johanniskreuz“ auf dem Startbildschirm. „Pfalzturm“ steht nur noch im Untertitel.
 
@@ -380,3 +382,4 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - 0.2.1 (13.11.2026): Schritt 1.2 Zeitstrahl der Arbeitsschritte.
 - 0.2.2 (13.11.2026): Schritt 1.3 ToDo-Seite.
 - 0.2.3 (13.11.2026): Schritt 1.4 Gantt.
+- 0.2.4 (13.11.2026): Startseiten-Kacheln ohne Beschreibung.
