@@ -1,0 +1,141 @@
+/* Pfalzturm – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info. */
+
+/* ---------- 1 Grundbausteine ---------- */
+
+.leise { color: var(--schrift-leise); }
+.klein { font-size: 0.9rem; }
+
+.abschnitt { margin-top: 2rem; }
+.schmal { max-width: 26rem; margin-left: auto; margin-right: auto; }
+
+.knopf {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--knopf-grund);
+    color: var(--knopf-schrift);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.knopf:disabled { opacity: 0.6; cursor: wait; }
+
+.knopf-leise {
+    background: transparent;
+    color: var(--schrift);
+    border: 1px solid var(--linie);
+}
+
+.eingabe {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--linie);
+    border-radius: 8px;
+    background: var(--kachel);
+    color: var(--schrift);
+    font: inherit;
+}
+
+.meldung { color: var(--fehler); font-weight: 600; }
+
+.hinweis {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: var(--hinweis-grund);
+}
+
+.update-hinweis {
+    position: fixed;
+    left: 50%;
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-radius: 10px;
+    background: var(--kopf-grund);
+    color: var(--kopf-schrift);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.update-hinweis .knopf { background: var(--kopf-schrift); color: var(--kopf-grund); }
+
+/* Themenfarbe als linker Streifen (Kacheln und Bereiche) */
+[data-feld="a"] { --feld: var(--feld-a); }
+[data-feld="b"] { --feld: var(--feld-b); }
+[data-feld="c"] { --feld: var(--feld-c); }
+[data-feld="d"] { --feld: var(--feld-d); }
+[data-feld="e"] { --feld: var(--feld-e); }
+[data-feld="f"] { --feld: var(--feld-f); }
+[data-feld="g"] { --feld: var(--feld-g); }
+
+.inhalt[data-feld] h1 {
+    padding-left: 0.75rem;
+    border-left: 6px solid var(--feld);
+}
+
+/* ---------- 2 Start ---------- */
+
+.start-kopf { text-align: center; padding: 1rem 0 0.5rem; }
+.start-logo { display: block; margin: 0 auto 1rem; border-radius: 22%; }
+
+.anmeldung { display: grid; gap: 0.75rem; }
+.anmeldung label { font-weight: 600; }
+
+.kacheln {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.kachel {
+    display: block;
+    padding: 1rem 1rem 1rem 1.25rem;
+    border-radius: 10px;
+    border: 1px solid var(--linie);
+    border-left: 8px solid var(--feld);
+    background: var(--kachel);
+    text-decoration: none;
+}
+
+.kachel:hover { border-color: var(--schrift-leise); border-left-color: var(--feld); }
+.kachel p { margin: 0; color: var(--schrift-leise); }
+
+.felder {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.5rem;
+}
+
+.felder li { display: flex; align-items: center; gap: 0.75rem; }
+
+.feld-marke {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 6px;
+    background: var(--feld);
+    color: var(--schrift-auf-feld);
+    font-weight: 700;
+}
+
+/* ---------- 3 Info ---------- */
+
+.wahl { border: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+.wahl legend { font-weight: 600; margin-bottom: 0.5rem; font-size: 1.2rem; }
+.wahl-feld { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; cursor: pointer; }
+.wahl-feld input { width: 1.2rem; height: 1.2rem; }

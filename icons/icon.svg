@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#1F3A4D"/>
+  <!-- Wald / Hügel des Pfälzerwalds -->
+  <path d="M0 392 Q96 330 196 366 T400 350 T512 372 V400 Q512 512 400 512 H112 Q0 512 0 400 Z" fill="#C8E6C9"/>
+  <!-- Turm als Gitterschale (Holz) -->
+  <g fill="none" stroke="#FFE0B2" stroke-width="14" stroke-linecap="round">
+    <path d="M196 380 Q232 250 206 108"/>
+    <path d="M316 380 Q280 250 306 108"/>
+    <path d="M196 380 L306 108"/>
+    <path d="M316 380 L206 108"/>
+    <path d="M226 380 L290 108" stroke-width="9"/>
+    <path d="M286 380 L222 108" stroke-width="9"/>
+  </g>
+  <!-- Aussichtsplattform -->
+  <rect x="180" y="92" width="152" height="22" rx="8" fill="#FFE0B2"/>
+</svg>
