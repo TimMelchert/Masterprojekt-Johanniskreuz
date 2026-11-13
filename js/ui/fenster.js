@@ -32,10 +32,11 @@ export function zeigeFenster(titel, inhalt, beiZu) {
 }
 
 // Kurze Nachfrage mit zwei Knöpfen. Gibt ein Promise mit true (Ja) oder false zurück.
-export function frage(titel, text, jaText = 'Ja') {
+// gefaehrlich = false: Ja-Knopf normal statt rot (zum Beispiel „Einlesen“)
+export function frage(titel, text, jaText = 'Ja', gefaehrlich = true) {
     return new Promise((fertig) => {
         let antwort = false;
-        const ja = el('button', { class: 'knopf knopf-rot', text: jaText, attrs: { type: 'button' } });
+        const ja = el('button', { class: gefaehrlich ? 'knopf knopf-rot' : 'knopf', text: jaText, attrs: { type: 'button' } });
         const nein = el('button', { class: 'knopf knopf-leise', text: 'Abbrechen', attrs: { type: 'button' } });
         const f = zeigeFenster(titel, el('div', {}, [
             el('p', { text }),
