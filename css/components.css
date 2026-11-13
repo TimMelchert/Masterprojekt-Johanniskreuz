@@ -1,4 +1,4 @@
-/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte. */
+/* Masterprojekt Johanniskreuz – Bausteine. Abschnitte: 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte, 7 ToDo-Seite. */
 
 /* ---------- 1 Grundbausteine ---------- */
 
@@ -383,3 +383,22 @@ textarea.eingabe { resize: vertical; min-height: 5rem; }
 }
 
 .unterpunkt .todo-liste, .einrueck { margin-left: 1.45rem; }
+
+/* ---------- 7 ToDo-Seite ---------- */
+
+.filter { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem; }
+.filter .feld { flex: 1 1 10rem; max-width: 16rem; }
+
+.todo-gruppe {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem 0.5rem;
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    background: var(--kachel);
+}
+
+.todo-gruppe[data-farbe] { border-left: 8px solid var(--schritt); }
+.todo-gruppe > h2 { margin: 0.4rem 0; }
+
+.klapper { margin: 0; font-size: 1rem; }
+.gruppe-titel { font-size: 1.15rem; font-weight: 700; }
