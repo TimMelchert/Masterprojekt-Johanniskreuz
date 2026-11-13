@@ -4,10 +4,10 @@
 Lies sie zuerst, bei jeder Aufgabe. `CLAUDE.md` im Hauptordner zeigt nur hierher.
 Für eine neue Etappe kommt ein eigener Plan dazu (`docs/PLAN-ETAPPE-<n>.md`); am Ende der Etappe wird er hier eingearbeitet und gelöscht.
 
-- Version der App: **0.1.0** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
+- Version der App: **0.1.1** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
 - Repo: https://github.com/TimMelchert/Masterprojekt-Johanniskreuz (öffentlich)
 - Seite (App): https://timmelchert.github.io/Masterprojekt-Johanniskreuz/ (sobald GitHub Pages eingeschaltet ist)
-- Laufende Etappe: **0 „Start“**. Schritt 0.1 „Grundgerüst“ liegt als Pull Request vor. Nächster Schritt: `API_URL` eintragen (0.1.1), dann Etappe 1 „Zeitplan“.
+- Laufende Etappe: **0 „Start“**. Schritt 0.1.1 liegt als Pull Request vor. Nächster Schritt: Etappe 1 „Zeitplan“ (die Person beschreibt den Zeitplan der Gruppe).
 
 Inhalt: 1 Arbeitsregeln · 2 Aufbau · 3 Aktueller Stand und Offen · 4 Festlegungen je Bereich · 5 Technik-Merkzettel ·
 6 Dateiübersicht · 7 Pläne · 8 Geschichte
@@ -246,7 +246,8 @@ Die genauen Spalten legt der Plan der jeweiligen Etappe fest. Geplant:
 - 0.1.0 (13.11.2026): Grundgerüst als PWA. Startseite mit Anmeldung (ein Gruppenpasswort, im Gerät gespeichert), Leiste mit Start, Karten,
   Zeitplan, Arbeitsschritte, Akteure (bis zu ihrer Etappe Platzhalter), Info mit Aussehen und Abmelden. Skript `apps-script/Code.gs`
   mit `einrichten` (legt die Blätter aus 2.3 an) und Aktion `ping`.
-- Die Person muss das Skript noch bereitstellen und die Adresse schicken; bis dahin ist `API_URL` leer und die Anmeldung meldet das.
+- 0.1.1 (13.11.2026): Skript ist bereitgestellt, `API_URL` eingetragen. Themenfelder von der Startseite entfernt (Wunsch der Person).
+  Icon nach der Visualisierung des T-Lab RPTU neu gezeichnet. Link zum T-Lab unter „Info“.
 
 ### 3.2 Offen
 
@@ -263,7 +264,9 @@ Themenfarben genau wie die Zellfarben im Projekt-Cockpit (Tabelle „Themenfarbe
 A Raum & Ökologie `#C8E6C9` · B Recht & Planung `#BBDEFB` · C Akteure & Governance `#FFE0B2` · D Tourismus & Regionalentwicklung `#FFF59D` ·
 E Turm & Alternativen `#F8BBD0` · F Theorie / kritische Landforschung `#D1C4E9` · G Organisation `#E0E0E0`.
 Kopfzeile Dunkelblau `#1F3A4D` (Tabellenköpfe im Cockpit). Bereiche in der Leiste: Karten A, Zeitplan G, Arbeitsschritte D, Akteure C.
-Icon: Gitterturm aus Holz über grünen Hügeln auf Dunkelblau (`icons/icon.svg`, PNGs daraus erzeugt).
+Icon: schlanke Gitterschale aus Holz mit Rautenmuster (wie der Entwurf des T-Lab RPTU) über grüner Wiese auf Dunkelblau (`icons/icon.svg`, PNGs daraus erzeugt).
+Die Startseite zeigt keine Themenfelder (Entscheidung 13.11.2026); die Farben bleiben für Bereiche und spätere Inhalte.
+Bilder des T-Lab (Visualisierungen) kommen nicht ins Repo, solange keine Erlaubnis da ist; die App verlinkt die Seite des T-Lab.
 
 ### Bibliotheken (Ausnahmen von „keine Fremdteile“)
 
@@ -311,7 +314,7 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - `js/`: `app.js` (Routing, Leiste, Update-Hinweis, Schutz vor fremden Rahmen), `config.js` (VERSION, `API_URL`, `features`, `BEREICHE`, `FELDER`),
   `api.js` (`api(action, daten)`, `pruefePasswort`, `ApiFehler`), `store.js` (`lesen`, `schreiben`, `abmelden`, `istAngemeldet`),
   `ui/dom.js` (`el`, `leeren`, `sichereUrl`), `ui/aussehen.js`.
-- `js/views/`: `start.js` (Anmeldung bzw. Kacheln und Themenfelder), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
+- `js/views/`: `start.js` (Anmeldung bzw. Kacheln), `info.js`, `platzhalter.js`, `nichtgefunden.js`.
 - `icons/`: `icon.svg`, `icon-180.png` (Apple), `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`.
 - `apps-script/Code.gs`: das Google-Skript (Kopie; die echte Fassung liegt im Apps-Script-Editor des Sheets).
 - `docs/STAND.md`: diese Datei.
@@ -332,3 +335,4 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 
 - 13.11.2026: Arbeitsregeln aus Thetadex und AktionsDeck übernommen und angepasst.
 - 0.1.0 (13.11.2026): Schritt 0.1 Grundgerüst.
+- 0.1.1 (13.11.2026): Skript-Adresse, Startseite ohne Themenfelder, neues Icon.

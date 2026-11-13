@@ -1,11 +1,10 @@
 // Startseite.
 // Ohne Anmeldung: Projekttitel, kurzer Satz und Anmeldefeld (sonst nichts, docs/STAND.md 2.1).
-// Mit Anmeldung: Kacheln der Bereiche und die Themenfelder aus dem Projekt-Cockpit.
+// Mit Anmeldung: Kacheln der Bereiche (Themenfelder seit 0.1.1 nicht mehr auf der Startseite, Wunsch der Person).
 
 import { el } from '../ui/dom.js';
 import { schreiben } from '../store.js';
 import { pruefePasswort } from '../api.js';
-import { FELDER } from '../config.js';
 
 export function render(container, ctx) {
     container.append(el('section', { class: 'start-kopf' }, [
@@ -27,19 +26,6 @@ export function render(container, ctx) {
         ]));
     });
     container.append(kacheln);
-
-    const liste = el('ul', { class: 'felder' });
-    FELDER.forEach((f) => {
-        liste.append(el('li', { attrs: { 'data-feld': f.id } }, [
-            el('span', { class: 'feld-marke', text: f.id.toUpperCase() }),
-            el('span', { text: f.titel })
-        ]));
-    });
-    container.append(el('section', { class: 'abschnitt' }, [
-        el('h2', { text: 'Themenfelder' }),
-        el('p', { class: 'leise', text: 'Gleiche Farben wie im Projekt-Cockpit und an der Wand.' }),
-        liste
-    ]));
 }
 
 function anmeldung(ctx) {
