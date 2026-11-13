@@ -11,12 +11,13 @@ import * as info from './views/info.js';
 import * as platzhalter from './views/platzhalter.js';
 import * as arbeitsschritte from './views/arbeitsschritte.js';
 import * as todos from './views/todos.js';
+import * as zeitplan from './views/zeitplan.js';
 import * as nichtgefunden from './views/nichtgefunden.js';
 
 const aktiv = BEREICHE.filter((b) => features[b.id]);
 
 // Adresse → Ansicht. Bereiche ohne eigene Ansicht zeigen bis zu ihrer Etappe einen Platzhalter.
-const ANSICHTEN = { '': start, start, info, arbeitsschritte, todos };
+const ANSICHTEN = { '': start, start, info, arbeitsschritte, todos, zeitplan };
 aktiv.forEach((b) => { if (!ANSICHTEN[b.id]) ANSICHTEN[b.id] = platzhalter; });
 
 // Leiste: Start und alle Bereiche, nur wenn angemeldet. Wird nur neu gebaut, wenn sich etwas ändert.
