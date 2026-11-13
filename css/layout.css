@@ -1,0 +1,127 @@
+/* Pfalzturm – Gerüst: Kopfzeile, Leiste (Handy unten, PC links), Inhalt. */
+
+.kopf {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    padding-top: calc(0.5rem + env(safe-area-inset-top));
+    background: var(--kopf-grund);
+    color: var(--kopf-schrift);
+}
+
+.kopf-marke {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.kopf-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.75rem;
+    text-decoration: none;
+}
+
+.kopf-links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; }
+
+.kopf :focus-visible { outline-color: var(--kopf-schrift); }
+
+/* Inhalt */
+.inhalt {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem calc(5.5rem + env(safe-area-inset-bottom));
+    outline: none;
+}
+
+/* Leiste: am Handy unten */
+.reiter {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    background: var(--kachel);
+    border-top: 1px solid var(--linie);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.reiter-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    min-height: 56px;
+    padding: 0.3rem 0.2rem;
+    text-decoration: none;
+    font-size: 0.8rem;
+    color: var(--schrift-leise);
+}
+
+.reiter-punkt {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    border: 2px solid var(--linie);
+    background: var(--hintergrund);
+}
+
+.reiter-link[data-feld] .reiter-punkt { border-color: transparent; }
+.reiter-link[data-feld="a"] .reiter-punkt { background: var(--feld-a); }
+.reiter-link[data-feld="c"] .reiter-punkt { background: var(--feld-c); }
+.reiter-link[data-feld="d"] .reiter-punkt { background: var(--feld-d); }
+.reiter-link[data-feld="g"] .reiter-punkt { background: var(--feld-g); }
+
+.reiter-link[aria-current="page"] {
+    color: var(--schrift);
+    font-weight: 600;
+}
+
+.reiter-link[aria-current="page"] .reiter-punkt { outline: 2px solid var(--schrift); outline-offset: 2px; }
+
+.reiter-name-lang { display: none; }
+
+/* PC: Leiste links */
+@media (min-width: 768px) {
+    body { display: grid; grid-template-columns: 220px 1fr; grid-template-rows: auto 1fr; min-height: 100vh; }
+    .kopf { grid-column: 1 / -1; }
+    .reiter {
+        position: sticky;
+        top: 60px;
+        align-self: start;
+        flex-direction: column;
+        border-top: none;
+        border-right: 1px solid var(--linie);
+        min-height: calc(100vh - 60px);
+        padding: 1rem 0.5rem;
+        background: transparent;
+    }
+    .reiter[hidden] + .inhalt { grid-column: 1 / -1; }
+    .reiter-link {
+        flex: none;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 0.75rem;
+        min-height: 44px;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    .reiter-link[aria-current="page"] { background: var(--kachel); }
+    .reiter-name-lang { display: inline; }
+    .reiter-name-kurz { display: none; }
+    .inhalt { padding-bottom: 2rem; width: 100%; }
+}

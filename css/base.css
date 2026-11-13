@@ -1,0 +1,91 @@
+/* Pfalzturm – Farben, Schrift, Grundelemente.
+   Farben NUR hier als Variablen. Jede Farbe hat einen hellen und einen dunklen Wert.
+   Die dunklen Werte stehen zweimal (für „Dunkel“ und für „Wie Gerät“): beide Blöcke gleich halten. */
+
+:root {
+    color-scheme: light dark;
+
+    /* Themenfelder A bis G, Farben wie im Projekt-Cockpit (Tabelle „Themenfarben“). Gleich in hell und dunkel. */
+    --feld-a: #C8E6C9;   /* Raum & Ökologie */
+    --feld-b: #BBDEFB;   /* Recht & Planung */
+    --feld-c: #FFE0B2;   /* Akteure & Governance */
+    --feld-d: #FFF59D;   /* Tourismus & Regionalentwicklung */
+    --feld-e: #F8BBD0;   /* Turm & Alternativen */
+    --feld-f: #D1C4E9;   /* Theorie / kritische Landforschung */
+    --feld-g: #E0E0E0;   /* Organisation */
+    --schrift-auf-feld: #1B1F23;
+
+    /* Kopfzeile: Dunkelblau aus den Tabellenköpfen des Cockpits, hell und dunkel gleich */
+    --kopf-grund: #1F3A4D;
+    --kopf-schrift: #F4F6F8;
+
+    /* Hell */
+    --hintergrund: #F5F4F0;
+    --kachel: #FFFFFF;
+    --schrift: #1B1F23;
+    --schrift-leise: #545B62;
+    --linie: #D5D8DC;
+    --knopf-grund: #1F3A4D;
+    --knopf-schrift: #FFFFFF;
+    --fokus: #1F3A4D;
+    --fehler: #B3261E;
+    --hinweis-grund: #EEF2F5;
+}
+
+:root[data-aussehen="dunkel"] {
+    --hintergrund: #14191E;
+    --kachel: #1E252C;
+    --schrift: #E9ECEF;
+    --schrift-leise: #A9B1B9;
+    --linie: #36404A;
+    --knopf-grund: #BBDEFB;
+    --knopf-schrift: #14191E;
+    --fokus: #BBDEFB;
+    --fehler: #F2B8B5;
+    --hinweis-grund: #1E2A35;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-aussehen="hell"]) {
+        --hintergrund: #14191E;
+        --kachel: #1E252C;
+        --schrift: #E9ECEF;
+        --schrift-leise: #A9B1B9;
+        --linie: #36404A;
+        --knopf-grund: #BBDEFB;
+        --knopf-schrift: #14191E;
+        --fokus: #BBDEFB;
+        --fehler: #F2B8B5;
+        --hinweis-grund: #1E2A35;
+    }
+}
+
+:root[data-aussehen="hell"] { color-scheme: light; }
+:root[data-aussehen="dunkel"] { color-scheme: dark; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+    background: var(--hintergrund);
+    color: var(--schrift);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+}
+
+h1, h2, h3 { line-height: 1.25; margin: 0 0 0.5em; }
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.2rem; }
+p { margin: 0 0 0.75em; }
+
+a { color: inherit; }
+
+:focus-visible {
+    outline: 3px solid var(--fokus);
+    outline-offset: 2px;
+}
+
+[hidden] { display: none !important; }
