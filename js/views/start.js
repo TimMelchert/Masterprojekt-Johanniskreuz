@@ -1,6 +1,6 @@
 // Startseite.
 // Ohne Anmeldung: Projekttitel, kurzer Satz und Anmeldefeld (sonst nichts, docs/STAND.md 2.1).
-// Mit Anmeldung: Kacheln der Bereiche (Themenfelder seit 0.1.1 nicht mehr auf der Startseite, Wunsch der Person).
+// Mit Anmeldung: Kacheln der Bereiche, nur mit Titel (Themenfelder seit 0.1.1 und Beschreibungen seit 0.2.4 nicht mehr, Wunsch der Person).
 
 import { el } from '../ui/dom.js';
 import { schreiben } from '../store.js';
@@ -21,8 +21,7 @@ export function render(container, ctx) {
     const kacheln = el('div', { class: 'kacheln' });
     ctx.bereiche.forEach((b) => {
         kacheln.append(el('a', { class: 'kachel', attrs: { href: '#/' + b.id, 'data-feld': b.feld } }, [
-            el('h2', { text: b.titel }),
-            el('p', { text: b.text })
+            el('h2', { text: b.titel })
         ]));
     });
     container.append(kacheln);
