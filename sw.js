@@ -1,6 +1,6 @@
 // Masterprojekt Johanniskreuz – Service Worker
 // VERSION muss exakt gleich sein wie in js/config.js (bei jeder Änderung beide hochzählen).
-const VERSION = '0.2.5';
+const VERSION = '0.2.6';
 const CACHE_NAME = 'johanniskreuz-' + VERSION;
 
 // App-Hülle: alle Dateien, die die App zum Starten braucht. Neue Dateien hier eintragen.
@@ -18,6 +18,7 @@ const HUELLE = [
   './js/store.js',
   './js/daten.js',
   './js/rechnen.js',
+  './js/einlesen.js',
   './js/ui/dom.js',
   './js/ui/aussehen.js',
   './js/ui/fenster.js',

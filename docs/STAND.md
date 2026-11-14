@@ -4,7 +4,7 @@
 Lies sie zuerst, bei jeder Aufgabe. `CLAUDE.md` im Hauptordner zeigt nur hierher.
 Für eine neue Etappe kommt ein eigener Plan dazu (`docs/PLAN-ETAPPE-<n>.md`); am Ende der Etappe wird er hier eingearbeitet und gelöscht.
 
-- Version der App: **0.2.5** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
+- Version der App: **0.2.6** (gleich in `js/config.js` und `sw.js`: beide Dateien prüfen)
 - Repo: https://github.com/TimMelchert/Masterprojekt-Johanniskreuz (öffentlich)
 - Seite (App): https://timmelchert.github.io/Masterprojekt-Johanniskreuz/ (sobald GitHub Pages eingeschaltet ist)
 - Laufende Etappe: **1 „Arbeitsschritte, ToDos und Gantt“** (Plan: `docs/PLAN-ETAPPE-1.md`). Schritte 1.1 bis 1.4 sind gemerged. Nächster Schritt: 1.5 Termine und echte Arbeitsschritte aus dem Gantt der Gruppe.
@@ -268,11 +268,14 @@ Die Spalten stehen im Skript in `FELDER_` (Etappe 1, mit Terminen) und `SPAETER_
 - 0.2.2 (Schritt 1.3): Seite ToDos: allgemeine ToDos, dann je Arbeitsschritt und Unterpunkt zum Zuklappen, Filter Person (inkl. „Ohne Person“) und Status, Zähler offen/erledigt.
 - 0.2.3 (Schritt 1.4): Seite Zeitplan: Gantt mit Monaten und Wochen, Meilensteine, Balken je Arbeitsschritt mit Fortschritt, Unterpunkte mit Datum zum Aufklappen, Heute-Linie.
 - 0.2.4: Kacheln auf der Startseite nur mit Titel.
+- 0.2.6 (Schritt 1.5b): „Info“ → „Daten einlesen“: eine vorbereitete JSON-Datei legt viele Einträge auf einmal an (`js/einlesen.js`). Damit kommt das Gantt der Gruppe ins Sheet.
 - 0.2.5 (Schritt 1.5a): Termine (Gruppentreffen wöchentlich, Interviews, einzelne Termine, freie Zeiten) im Skript, im Zeitstrahl (wöchentliche oben, einmalige unter ihrem Abschnitt, „Nächste Termine“, „Alle Termine“) und im Gantt (Zeile „Termine“).
 
 ### 3.2 Offen
 
-- Echte Arbeitsschritte, Unterpunkte, Meilensteine und Termine aus dem Gantt der Gruppe (Excel vom 12.11.2026) ins Sheet übernehmen (Schritt 1.5b). Die Person schickt die einzelnen Arbeitsschritte später noch genauer.
+- Die Person liest die Datei `startdaten-gantt.json` (aus dem Gantt der Gruppe vom 12.11.2026, liegt nur in den Projektdateien, nicht im Repo) unter „Info“ → „Daten einlesen“ ein.
+- Die Person schickt die einzelnen Arbeitsschritte später noch genauer (Unterpunkte, ToDos). Dafür wieder eine Datei zum Einlesen bauen.
+- Danach `docs/PLAN-ETAPPE-1.md` hier einarbeiten und löschen (Ende Etappe 1).
 
 ---
 
@@ -319,6 +322,12 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - Gantt: 14 px je Tag am PC, 10 px am Handy; Zeitraum vom frühesten bis spätesten Datum (mit Rand); Positionen über `element.style` (CSP-konform).
   Unterpunkte erscheinen nur mit Datum. Arbeitsschritte ohne Datum zeigen „ohne Datum“.
 
+### Daten einlesen (ab 0.2.6)
+
+- Unter „Info“ (nur angemeldet). Datei im Format `johanniskreuz-einlesen-1` (Aufbau im Kopf von `js/einlesen.js`).
+- Jeder Eintrag geht einzeln über `speichern` (gleiche Prüfung wie im Formular). Gleicher Titel an gleicher Stelle wird übersprungen, darum ist zweimal Einlesen harmlos.
+- **Dateien zum Einlesen kommen nie ins Repo** (Projektdaten, Namen). Sie liegen in den Projektdateien oder bei der Person.
+
 ### Termine (ab 0.2.5)
 
 - Wunsch der Person: Im Zeitstrahl stehen auch Termine, zum Beispiel montags abends das Treffen zu ToDos und Arbeitsschritten, und Interviewtermine.
@@ -355,7 +364,7 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - Hauptordner: `CLAUDE.md` (zeigt nur hierher), `README.md`, `index.html`, `manifest.webmanifest`, `sw.js`, `.nojekyll`.
   `LIZENZEN.md` kommt mit der ersten Bibliothek (Etappe 2).
 - `css/`: `base.css` (Farben, hell und dunkel), `layout.css` (Kopf, Leiste unten am Handy, links am PC), `components.css` (Abschnitte 1 Grundbausteine, 2 Start, 3 Info, 4 Fenster und Formulare, 5 ToDos, 6 Arbeitsschritte, 7 ToDo-Seite, 8 Zeitplan).
-- `js/`: `daten.js` (ab 1.1: `ladeDaten`, `speichere`, `hake`, `loesche`, `vergessen`, Listen `STATUS`, `FARBEN`; Daten nur im Arbeitsspeicher), `app.js` (Routing, Leiste, Update-Hinweis, Schutz vor fremden Rahmen), `config.js` (VERSION, `API_URL`, `features`, `BEREICHE`, `FELDER`),
+- `js/`: `einlesen.js` (ab 0.2.6, Datei einlesen), `daten.js` (ab 1.1: `ladeDaten`, `speichere`, `hake`, `loesche`, `vergessen`, Listen `STATUS`, `FARBEN`; Daten nur im Arbeitsspeicher), `app.js` (Routing, Leiste, Update-Hinweis, Schutz vor fremden Rahmen), `config.js` (VERSION, `API_URL`, `features`, `BEREICHE`, `FELDER`),
   `api.js` (`api(action, daten)`, `pruefePasswort`, `ApiFehler`), `store.js` (`lesen`, `schreiben`, `abmelden`, `istAngemeldet`),
   `ui/dom.js` (`el`, `leeren`, `sichereUrl`), `ui/aussehen.js`, `ui/fenster.js` (ab 1.1: `zeigeFenster` mit `<dialog>`, `frage`), `ui/formular.js` (ab 1.1: `formularFenster` mit Feldarten text, lang, datum, wahl, farbe, haken).
 - `js/rechnen.js` (ab 1.2): Sortieren, Fortschritt, `planIndex`, `standIndex`, `vergleichText`, `zeitstrahlReihe`, `personen`, Datumstexte.
@@ -389,3 +398,4 @@ wer den Link öffnet, meldet sich dort wie gewohnt an.
 - 0.2.3 (13.11.2026): Schritt 1.4 Gantt.
 - 0.2.4 (13.11.2026): Startseiten-Kacheln ohne Beschreibung.
 - 0.2.5 (13.11.2026): Termine im Skript, Zeitstrahl und Gantt.
+- 0.2.6 (13.11.2026): Daten einlesen (Gantt der Gruppe).

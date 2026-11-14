@@ -2,7 +2,7 @@
 // Hier steht KEIN Passwort. Das Passwort steht nur in den Skripteigenschaften (APP_PIN) und im Gerät nach der Anmeldung.
 
 // Muss exakt gleich sein wie VERSION in sw.js.
-export const VERSION = '0.2.5';
+export const VERSION = '0.2.6';
 
 // Adresse des Google Apps Scripts (Web-App, endet auf /exec). Kein Geheimnis: Ohne Passwort gibt das Skript nichts heraus.
 export const API_URL = 'https://script.google.com/macros/s/AKfycbypg3uMEsMjK_yhhCZwgSvTV94te0wIxIc6khdte5k0hl0UAWNL3bCR8RG1RexZlyGj/exec';
