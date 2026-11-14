@@ -15,9 +15,12 @@ var STANDARD_ = ["id", "erstellt_am", "geaendert_am", "geloescht"];
 var STATUS_ = ["offen", "in_arbeit", "erledigt"];
 // Farben der Arbeitsschritte (Kennungen; die Farbwerte stehen in css/base.css)
 var FARBEN_ = ["gruen", "blau", "orange", "gelb", "rosa", "lila", "tuerkis", "grau"];
+// Arten von Terminen und Wiederholung (gleiche Listen wie in js/daten.js)
+var TERMIN_ARTEN_ = ["termin", "treffen", "interview", "frei"];
+var WIEDERHOLUNG_ = ["einmalig", "woechentlich"];
 
 // Felder je Blatt, die die App schreiben darf. Reihenfolge = Spalten im Sheet (nach STANDARD_).
-// art: text (max = Höchstlänge), datum (JJJJ-MM-TT oder leer), wahl (werte), zahl, wahr (ja/nein), bezug (id in einem anderen Blatt)
+// art: text (max = Höchstlänge), zeit (Uhrzeit als Text, z. B. „18:00“), datum (JJJJ-MM-TT oder leer), wahl (werte), zahl, wahr (ja/nein), bezug (id in einem anderen Blatt)
 var FELDER_ = {
   arbeitsschritte: {
     titel: { art: "text", max: 120, pflicht: true },
@@ -50,12 +53,27 @@ var FELDER_ = {
     titel: { art: "text", max: 120, pflicht: true },
     datum: { art: "datum", pflicht: true },
     beschreibung: { art: "text", max: 2000 }
+  },
+  // Termine (ab 0.2.5): Gruppentreffen, Interviews, einzelne Termine, freie Zeiten (Ferien).
+  // Die ersten sechs Spalten gab es schon seit 0.1 (Blatt „termine“), darum diese Reihenfolge.
+  // Namen von Interviewpartnerinnen und -partnern stehen nur hier im Sheet, nie im Repo (docs/STAND.md 2.1).
+  termine: {
+    titel: { art: "text", max: 120, pflicht: true },
+    organisation: { art: "text", max: 200 },
+    datum: { art: "datum", pflicht: true },
+    uhrzeit: { art: "zeit", max: 20 },
+    ort: { art: "text", max: 200 },
+    personen: { art: "text", max: 500 },
+    art: { art: "wahl", werte: TERMIN_ARTEN_ },
+    ende: { art: "datum" },
+    wiederholung: { art: "wahl", werte: WIEDERHOLUNG_ },
+    bis: { art: "datum" },
+    notiz: { art: "text", max: 2000 }
   }
 };
 
 // Blätter für spätere Etappen (noch ohne Aktionen in der App)
 var SPAETER_ = {
-  termine: ["titel", "organisation", "datum", "uhrzeit", "ort", "personen"],
   akteure: ["name", "typ", "feld", "einfluss", "interesse", "notiz"],
   beziehungen: ["von", "nach", "art", "staerke", "quelle"]
 };
@@ -97,7 +115,7 @@ function einrichten() {
       var felder = FELDER_[name];
       Object.keys(felder).concat(["id"]).forEach(function (k) {
         var art = felder[k] ? felder[k].art : "text";
-        if (art === "text" || art === "datum" || art === "bezug" || k === "id") {
+        if (art === "text" || art === "zeit" || art === "datum" || art === "bezug" || k === "id") {
           sheet.getRange(2, karte[k] + 1, Math.max(sheet.getMaxRows() - 1, 1), 1).setNumberFormat("@");
         }
       });
@@ -226,6 +244,7 @@ function eintragAus_(name, z, sp) {
     else if (art === "wahr") o[k] = istWahr_(v);
     else if (art === "zahl") o[k] = String(v).trim() === "" || !isFinite(Number(v)) ? null : Number(v);
     else if (art === "text") o[k] = ohneSchutz_(v);
+    else if (art === "zeit") o[k] = v instanceof Date && !isNaN(v) ? Utilities.formatDate(v, Session.getScriptTimeZone(), "HH:mm") : ohneSchutz_(v);
     else o[k] = String(v == null ? "" : v).trim();
   });
   return o;
@@ -245,7 +264,7 @@ function pruefeEingabe_(name, daten, teil) {
     var v = daten[k];
     var leer = v == null || String(v).trim() === "";
     if (f.pflicht && leer) return { fehler: "Bitte „" + k + "“ ausfüllen." };
-    if (f.art === "text") {
+    if (f.art === "text" || f.art === "zeit") {
       werte[k] = bereinigeText_(v, f.max, f.max > 200);
     } else if (f.art === "datum") {
       var t = leer ? "" : String(v).trim();
@@ -331,6 +350,14 @@ function speichern_(data) {
     var start = "start" in p.werte ? p.werte.start : tag_(zeile[sp.start]);
     var ende = "ende" in p.werte ? p.werte.ende : tag_(zeile[sp.ende]);
     if (start && ende && ende < start) return { error: "eingabe", message: "Das Ende liegt vor dem Start." };
+  }
+  // Termine: Ende und „wiederholen bis“ nicht vor dem Datum
+  if (name === "termine") {
+    var tDatum = "datum" in p.werte ? p.werte.datum : tag_(zeile[sp.datum]);
+    var tEnde = "ende" in p.werte ? p.werte.ende : tag_(zeile[sp.ende]);
+    var tBis = "bis" in p.werte ? p.werte.bis : tag_(zeile[sp.bis]);
+    if (tEnde && tEnde < tDatum) return { error: "eingabe", message: "Das Ende liegt vor dem Datum." };
+    if (tBis && tBis < tDatum) return { error: "eingabe", message: "„Wiederholen bis“ liegt vor dem Datum." };
   }
 
   var jetzt = jetzt_(zeile[sp.geaendert_am]);

@@ -69,7 +69,7 @@ Alle mit `id, erstellt_am, geaendert_am, geloescht` vorne.
 
 - `status`: `offen`, `in_arbeit`, `erledigt`. `farbe`: Kennung aus einer festen Liste von 8 Farben (hell und dunkel lesbar), Auswahl im Formular.
 - Das Blatt `aufgaben` aus 0.1 wird nicht mehr gebraucht (es ist leer). `einrichten` legt es nicht mehr an; du kannst es löschen.
-- `termine`, `akteure`, `beziehungen`, `einstellungen` bleiben für später.
+- `akteure`, `beziehungen`, `einstellungen` bleiben für später. `termine` kam in 0.2.5 dazu (Wunsch der Person, siehe STAND.md 4 „Termine“).
 
 ## Skript (neue Aktionen)
 

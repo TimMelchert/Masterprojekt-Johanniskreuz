@@ -517,3 +517,73 @@ textarea.eingabe { resize: vertical; min-height: 5rem; }
 @media (min-width: 768px) {
     .gantt-raster { --name-breite: 12rem; }
 }
+
+/* ---------- 9 Termine (Zeitstrahl und Gantt) ---------- */
+
+/* Farbe je Art: Termin blau, Gruppentreffen grau, Interview rosa, frei schraffiert */
+[data-art="termin"] { --termin: var(--feld-b); }
+[data-art="treffen"] { --termin: var(--feld-g); }
+[data-art="interview"] { --termin: var(--feld-e); }
+[data-art="frei"] { --termin: var(--feld-g); }
+
+.termin-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.05rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--linie);
+    border-left: 6px solid var(--termin);
+    border-radius: 6px;
+    background: var(--kachel);
+    color: var(--schrift);
+    font: inherit;
+    font-size: 0.82rem;
+    line-height: 1.25;
+    text-align: left;
+    cursor: pointer;
+}
+
+.termin-chip[data-art="frei"] { border-left-style: dashed; color: var(--schrift-leise); }
+.termin-zeit { font-weight: 700; white-space: nowrap; }
+.termin-titel { hyphens: auto; overflow-wrap: anywhere; }
+
+.termine-regel { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.5rem; padding: 0; }
+.termine-regel .termin-chip { width: auto; }
+
+.strahl-schritt { flex-direction: column; gap: 0.3rem; }
+.strahl-termine { list-style: none; display: grid; gap: 0.3rem; width: 11.5rem; margin: 0.2rem 0 0; padding: 0; }
+
+.termine-kasten {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem 0.75rem;
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    background: var(--kachel);
+}
+
+.termine-kasten h2 { margin: 0.4rem 0 0.6rem; font-size: 1.1rem; }
+.termin-liste { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.4rem; margin: 0 0 0.25rem; padding: 0; }
+
+/* Gantt: Zeile „Termine“ */
+.gantt-termin {
+    position: absolute;
+    top: 50%;
+    height: 1.1rem;
+    transform: translateY(-50%);
+    padding: 0;
+    border: 1px solid var(--schrift-leise);
+    border-radius: 50%;
+    background: var(--termin);
+    cursor: pointer;
+}
+
+.gantt-termin[data-art="frei"] {
+    border-radius: 4px;
+    background: repeating-linear-gradient(135deg, var(--feld-g) 0 4px, transparent 4px 8px);
+    opacity: 0.8;
+}
+
+.gantt-termin::after { content: ""; position: absolute; left: -0.3rem; right: -0.3rem; top: -0.8rem; bottom: -0.8rem; }

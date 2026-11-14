@@ -2,19 +2,22 @@
 // Arbeitsschritte als farbige Abschnitte nebeneinander, Meilensteine als Raute dazwischen.
 // Zwei Pfeile darüber: „Plan“ (heute laut Datum) und „Stand“ (erster nicht erledigter Schritt).
 // Antippen eines Abschnitts zeigt darunter seine Unterpunkte; jeder Unterpunkt klappt seine ToDos auf.
+// Termine (ab 0.2.5): wöchentliche über dem Strahl, einmalige unter ihrem Abschnitt, darunter „Nächste Termine“ und alle Termine zum Aufklappen.
 
 import { el, leeren } from '../ui/dom.js';
-import { ladeDaten, STATUS } from '../daten.js';
+import { ladeDaten, STATUS, TERMIN_ARTEN } from '../daten.js';
 import {
     sortiereSchritte, planIndex, standIndex, vergleichText, zeitstrahlReihe, zeitraumText, datumKurz,
-    fortschrittSchritt, fortschrittUnterpunkt, schrittErledigt, unterpunktErledigt, unterpunkteVon, todosVon
+    fortschrittSchritt, fortschrittUnterpunkt, schrittErledigt, unterpunktErledigt, unterpunkteVon, todosVon,
+    naechsteTermine, termineJeSchritt, terminZeit, wiederholungText
 } from '../rechnen.js';
-import { schrittFormular, unterpunktFormular, todoFormular, meilensteinFormular } from './formulare.js';
+import { schrittFormular, unterpunktFormular, todoFormular, meilensteinFormular, terminFormular } from './formulare.js';
 import { todoZeile } from './todo-zeile.js';
 
 // Bleibt beim Neuzeichnen erhalten (nur solange die Seite offen ist)
 let gewaehlt = null;          // id des gewählten Arbeitsschritts
 const offen = new Set();      // ids der aufgeklappten Unterpunkte
+let alleTermineAuf = false;   // Liste „Alle Termine“ aufgeklappt
 
 export function render(container, ctx) {
     container.append(el('h1', { text: ctx.bereich.titel }));
@@ -49,12 +52,15 @@ function zeichne(inhalt, stand) {
     neuSchritt.addEventListener('click', () => schrittFormular(stand, null, neuZeichnen));
     const neuMeilenstein = el('button', { class: 'knopf knopf-leise', text: '+ Meilenstein', attrs: { type: 'button' } });
     neuMeilenstein.addEventListener('click', () => meilensteinFormular(stand, null, neuZeichnen));
+    const neuTermin = el('button', { class: 'knopf knopf-leise', text: '+ Termin', attrs: { type: 'button' } });
+    neuTermin.addEventListener('click', () => terminFormular(stand, null, neuZeichnen));
     const neuLaden = el('button', { class: 'knopf knopf-leise', text: 'Neu laden', attrs: { type: 'button' } });
     neuLaden.addEventListener('click', () => laden(inhalt, true));
-    inhalt.append(el('div', { class: 'werkzeuge' }, [neuSchritt, neuMeilenstein, neuLaden]));
+    inhalt.append(el('div', { class: 'werkzeuge' }, [neuSchritt, neuMeilenstein, neuTermin, neuLaden]));
 
     if (!schritte.length && !stand.meilensteine.length) {
         inhalt.append(el('p', { class: 'hinweis', text: 'Noch keine Arbeitsschritte. Lege den ersten mit „+ Arbeitsschritt“ an.' }));
+        inhalt.append(termineKasten(stand, neuZeichnen));
         return;
     }
 
@@ -67,6 +73,14 @@ function zeichne(inhalt, stand) {
         el('span', { class: 'leise', text: 'erster offener Schritt' }),
         satz ? el('strong', { class: 'pfeil-satz', text: satz }) : null
     ]));
+
+    // Wöchentliche Termine (zum Beispiel das Gruppentreffen) über dem Strahl
+    const regel = stand.termine.filter((t) => t.wiederholung === 'woechentlich');
+    if (regel.length) {
+        inhalt.append(el('ul', { class: 'termine-regel', attrs: { 'aria-label': 'Wöchentliche Termine' } },
+            regel.map((t) => el('li', {}, [terminChip(stand, t, '↻ ' + wiederholungText(t), neuZeichnen)]))));
+    }
+    const jeSchritt = termineJeSchritt(stand.termine, schritte);
 
     // Der Strahl
     const strahl = el('ol', { class: 'strahl', attrs: { 'aria-label': 'Zeitstrahl der Arbeitsschritte' } });
@@ -109,7 +123,12 @@ function zeichne(inhalt, stand) {
             ]) : null
         ]);
         knopf.addEventListener('click', () => { gewaehlt = s.id; neuZeichnen(); });
-        const li = el('li', { class: 'strahl-teil' }, [knopf]);
+        const termine = jeSchritt[teil.index];
+        const li = el('li', { class: 'strahl-teil strahl-schritt' }, [
+            knopf,
+            termine.length ? el('ul', { class: 'strahl-termine', attrs: { 'aria-label': 'Termine in ' + s.titel } },
+                termine.map((v) => el('li', {}, [terminChip(stand, v.termin, terminZeit(v), neuZeichnen)]))) : null
+        ]);
         if (s.id === gewaehlt) gewaehltKnoten = li;
         strahl.append(li);
     });
@@ -123,6 +142,8 @@ function zeichne(inhalt, stand) {
         });
     }
 
+    inhalt.append(termineKasten(stand, neuZeichnen));
+
     const schritt = schritte.find((s) => s.id === gewaehlt);
     if (schritt) inhalt.append(details(stand, schritt, neuZeichnen));
 
@@ -133,6 +154,49 @@ function zeichne(inhalt, stand) {
             el('ul', { class: 'todo-liste' }, allgemein.map((t) => todoZeile(t, { stand, neuZeichnen })))
         ]));
     }
+}
+
+// Ein Termin als kleiner Knopf (Antippen öffnet das Formular). zeit = Text vor dem Titel.
+function terminChip(stand, t, zeit, neuZeichnen) {
+    const art = (TERMIN_ARTEN.find((a) => a.id === t.art) || TERMIN_ARTEN[0]).titel;
+    const mehr = [art, t.ort, t.organisation].filter(Boolean).join(' · ');
+    const k = el('button', { class: 'termin-chip', attrs: { type: 'button', 'data-art': t.art || 'termin', title: t.titel + ' · ' + mehr, 'aria-label': 'Termin bearbeiten: ' + t.titel + ', ' + zeit } }, [
+        el('span', { class: 'termin-zeit', text: zeit }),
+        el('span', { class: 'termin-titel', text: t.titel })
+    ]);
+    k.addEventListener('click', () => terminFormular(stand, t, neuZeichnen));
+    return k;
+}
+
+// „Nächste Termine“ (die nächsten fünf, auch wöchentliche) und darunter alle Termine zum Aufklappen
+function termineKasten(stand, neuZeichnen) {
+    const naechste = naechsteTermine(stand.termine, 5);
+    const teile = [el('h2', { text: 'Nächste Termine' })];
+    if (!stand.termine.length) {
+        teile.push(el('p', { class: 'leise', text: 'Noch keine Termine. Lege einen mit „+ Termin“ an, zum Beispiel das wöchentliche Treffen oder ein Interview.' }));
+    } else if (!naechste.length) {
+        teile.push(el('p', { class: 'leise', text: 'Keine anstehenden Termine.' }));
+    } else {
+        teile.push(el('ul', { class: 'termin-liste' }, naechste.map((v) => el('li', {}, [terminChip(stand, v.termin, terminZeit(v), neuZeichnen)]))));
+    }
+    if (stand.termine.length) {
+        const knopf = el('button', { class: 'toggler', attrs: { type: 'button', 'aria-expanded': alleTermineAuf ? 'true' : 'false' } }, [
+            el('span', { class: 'toggler-pfeil', text: alleTermineAuf ? '▾' : '▸', attrs: { 'aria-hidden': 'true' } }),
+            el('span', { class: 'unterpunkt-titel', text: 'Alle Termine (' + stand.termine.length + ')' })
+        ]);
+        knopf.addEventListener('click', () => { alleTermineAuf = !alleTermineAuf; neuZeichnen(); });
+        teile.push(knopf);
+        if (alleTermineAuf) {
+            const alle = [...stand.termine].sort((a, b) => a.datum.localeCompare(b.datum) || String(a.uhrzeit || '').localeCompare(String(b.uhrzeit || '')));
+            teile.push(el('ul', { class: 'termin-liste' }, alle.map((t) => {
+                const zeit = t.wiederholung === 'woechentlich'
+                    ? '↻ ' + wiederholungText(t)
+                    : terminZeit({ termin: t, datum: t.datum, ende: t.ende || t.datum });
+                return el('li', {}, [terminChip(stand, t, zeit, neuZeichnen)]);
+            })));
+        }
+    }
+    return el('section', { class: 'termine-kasten', attrs: { 'aria-label': 'Termine' } }, teile);
 }
 
 function statusText(id) {

@@ -1,10 +1,10 @@
-// Daten für Arbeitsschritte, Unterpunkte, ToDos und Meilensteine (Etappe 1).
+// Daten für Arbeitsschritte, Unterpunkte, ToDos, Meilensteine und Termine (Etappe 1).
 // Lädt alles mit einer Anfrage und hält es nur im Arbeitsspeicher, solange die Seite offen ist
 // (nie im Gerät oder im Service Worker, docs/STAND.md 1.5). Nach jedem Speichern wird der Stand hier angepasst.
 
 import { api } from './api.js';
 
-export const BLAETTER = ['arbeitsschritte', 'unterpunkte', 'todos', 'meilensteine'];
+export const BLAETTER = ['arbeitsschritte', 'unterpunkte', 'todos', 'meilensteine', 'termine'];
 
 export const STATUS = [
     { id: 'offen', titel: 'Offen' },
@@ -24,7 +24,20 @@ export const FARBEN = [
     { id: 'grau', titel: 'Grau' }
 ];
 
-let stand = null;      // { arbeitsschritte: [], unterpunkte: [], todos: [], meilensteine: [] }
+// Arten von Terminen (gleiche Liste wie TERMIN_ARTEN_ im Skript). Farben in css/components.css (Abschnitt 9).
+export const TERMIN_ARTEN = [
+    { id: 'termin', titel: 'Termin' },
+    { id: 'treffen', titel: 'Gruppentreffen' },
+    { id: 'interview', titel: 'Interview' },
+    { id: 'frei', titel: 'Frei / Ferien' }
+];
+
+export const WIEDERHOLUNG = [
+    { id: 'einmalig', titel: 'Einmalig' },
+    { id: 'woechentlich', titel: 'Jede Woche' }
+];
+
+let stand = null;      // { arbeitsschritte: [], unterpunkte: [], todos: [], meilensteine: [], termine: [] }
 let laeuft = null;     // laufende Anfrage, damit zwei Ansichten nicht doppelt laden
 
 // Gibt den Stand zurück; lädt beim ersten Mal (oder mit neu = true) vom Skript.

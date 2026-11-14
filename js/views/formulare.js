@@ -1,8 +1,8 @@
-// Formulare für Arbeitsschritte, Unterpunkte, ToDos und Meilensteine.
+// Formulare für Arbeitsschritte, Unterpunkte, ToDos, Meilensteine und Termine.
 // Werden vom Zeitstrahl, der ToDo-Seite und dem Gantt benutzt. fertig() wird nach erfolgreichem Speichern oder Löschen aufgerufen.
 
 import { formularFenster } from '../ui/formular.js';
-import { speichere, loesche, STATUS, FARBEN } from '../daten.js';
+import { speichere, loesche, STATUS, FARBEN, TERMIN_ARTEN, WIEDERHOLUNG } from '../daten.js';
 import { naechsteReihenfolge, sortiereSchritte, sortiereUnterpunkte } from '../rechnen.js';
 
 // Beim Ändern gehen id und geaendert_am mit (Schutz vor Überschreiben im Skript)
@@ -96,5 +96,33 @@ export function meilensteinFormular(stand, alt, fertig) {
         },
         loeschen: alt ? async () => { await loesche('meilensteine', alt.id); fertig(); } : null,
         loeschenText: 'Der Meilenstein „' + (alt ? alt.titel : '') + '“ wird gelöscht.'
+    });
+}
+
+// Termine: Gruppentreffen (meist wöchentlich), Interviews, einzelne Termine, freie Zeiten.
+// vorgabe: Werte für einen neuen Termin (zum Beispiel { art: 'treffen' }).
+export function terminFormular(stand, alt, fertig, vorgabe = {}) {
+    const felder = [
+        { name: 'titel', titel: 'Titel', pflicht: true, max: 120 },
+        { name: 'art', titel: 'Art', art: 'wahl', pflicht: true, werte: TERMIN_ARTEN },
+        { name: 'datum', titel: 'Datum (bei „Jede Woche“: erster Termin)', art: 'datum', pflicht: true },
+        { name: 'uhrzeit', titel: 'Uhrzeit (optional)', max: 20, platzhalter: 'z. B. 18:00' },
+        { name: 'ende', titel: 'Bis Datum (optional, bei mehreren Tagen)', art: 'datum' },
+        { name: 'wiederholung', titel: 'Wiederholung', art: 'wahl', pflicht: true, werte: WIEDERHOLUNG },
+        { name: 'bis', titel: 'Wiederholen bis (optional)', art: 'datum', hilfe: 'Leer = bis zum Ende des Zeitplans. In freien Zeiten (Ferien) fällt der Termin aus.' },
+        { name: 'ort', titel: 'Ort (optional)', max: 200 },
+        { name: 'organisation', titel: 'Organisation (optional)', max: 200 },
+        { name: 'personen', titel: 'Personen (optional)', max: 500, hilfe: 'Nur nach Anmeldung sichtbar. Steht nur im Sheet der Gruppe.' },
+        { name: 'notiz', titel: 'Notiz', art: 'lang' }
+    ];
+    formularFenster(alt ? 'Termin bearbeiten' : 'Neuer Termin', felder, alt || { art: 'termin', wiederholung: 'einmalig', ...vorgabe }, {
+        speichern: async (d) => {
+            if (d.ende && d.ende < d.datum) throw new Error('„Bis Datum“ liegt vor dem Datum.');
+            if (d.bis && d.bis < d.datum) throw new Error('„Wiederholen bis“ liegt vor dem Datum.');
+            await speichere('termine', mitKennung(alt, d));
+            fertig();
+        },
+        loeschen: alt ? async () => { await loesche('termine', alt.id); fertig(); } : null,
+        loeschenText: 'Der Termin „' + (alt ? alt.titel : '') + '“ wird gelöscht' + (alt && alt.wiederholung === 'woechentlich' ? ' (alle Wochen).' : '.')
     });
 }

@@ -1,5 +1,5 @@
 // Formulare im Fenster für Arbeitsschritte, Unterpunkte, ToDos und Meilensteine.
-// felder: [{ name, titel, art: 'text'|'lang'|'datum'|'wahl'|'farbe'|'haken', pflicht, werte: [{id, titel}], hilfe }]
+// felder: [{ name, titel, art: 'text'|'lang'|'datum'|'wahl'|'farbe'|'haken', pflicht, werte: [{id, titel}], hilfe, platzhalter }]
 // formularFenster(titel, felder, werte, { speichern(daten) → Promise, loeschen() → Promise | null })
 // Schließt erst, wenn das Skript den Erfolg bestätigt hat. Bei Fehlern bleibt alles stehen (docs/STAND.md 1.5).
 
@@ -38,7 +38,7 @@ function feldBauen(f, wert) {
     } else {
         eingabe = el('input', {
             class: 'eingabe',
-            attrs: { id, name: f.name, type: f.art === 'datum' ? 'date' : 'text', maxlength: f.max || 200, required: f.pflicht }
+            attrs: { id, name: f.name, type: f.art === 'datum' ? 'date' : 'text', maxlength: f.max || 200, required: f.pflicht, placeholder: f.platzhalter || null }
         });
         eingabe.value = wert || '';
     }
